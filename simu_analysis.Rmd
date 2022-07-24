@@ -1,0 +1,56 @@
+---
+title: ""
+author: ""
+date: "`r format(Sys.time(), '%d-%m-%Y')`"
+output: 
+  html_document:
+    code_folding: hide
+    number_sections: true
+    toc: true
+    toc_depth: 4
+    toc_float: true
+---
+
+```{r global_options, echo = FALSE, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, 
+                      include = TRUE, cache = FALSE, tidy = FALSE, 
+                      size = "big", fig.width=8, fig.asp=0.7,
+                      width = 1500)
+```
+
+# Preparations
+```{r setup}
+## load libraries
+if (!require(tidyverse)) {library(tidyverse)}
+if (!require(brms)) {library(brms)}
+if (!require(emmeans)) {library(emmeans)}
+```
+
+# Simulate data (2 $\times$ 2 design)
+
+```{r}
+source(file.path("R", "func_sim.R")) # source the simulation code
+
+P <- list(
+  # define the population (fixed effects) parameters
+  alpha = -4,        # the grand mean
+  beta_ori = -2,     # orientation: inverted - upright
+  beta_sp = -1,      # spatial frequency: high - low
+  beta_ori_sp = 1   # interaction between orientation and SF
+)
+set.seed(2022)
+theout <- simudata_lmm2(P)
+
+# "truth"
+theout$population
+```
+
+```{r}
+(df_simu22 <- theout$simudata)
+```
+
+
+# Session information {.unlisted .unnumbered}
+```{r}
+sessionInfo()
+```
