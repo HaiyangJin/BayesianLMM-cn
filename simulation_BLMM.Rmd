@@ -18,6 +18,7 @@ bibliography: BLMM_Ref.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(rbbt)
+set.seed(2022)
 ```
 # 假定的心理学实验设计
 这部分通过模拟实验任务数据，然后采用贝叶斯分层模型的方法进行模型拟合。在实验任务中，假定我们想要研究抑郁症患者观看不同类型图片的晚期正电位（late positive potentials, LPP）的影响。为了让实验设计趋于简单理解，我们将实验设计成2 x 2的模式。被试间因素为抑郁症和健康对照组两个组别，而不同类型的图片（正性类型图片和负性类型的图片）设置成两种被试内因素。因变量是晚期正电位（late positive potentials, LPP)的振幅。在数据生成中将采用 @lisaFauxSimulationFactorial2021 的R包进行混合实验设计数据的生成。
@@ -26,47 +27,51 @@ if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
 if (!require(brms)) {library(brms)}
 if (!require(bayesplot)) {library(bayesplot)}
+if (!require(emmeans)) {library(emmeans)}
 ```
 我们假定抑郁症患者组有30人，健康对照组有30人。开始之前我们先设置一些假定的参数，以便后续的模型拟合结果对照假定的参数。在起始阶段先设置固定效应，将图片的类型编码(contrast-coded)成-0.5和0.5(负性类型图片编码成-0.5，正性图片编码成0.5)。
 
 ```{r}
 #生成假定实验的条件的数据矩阵
-data <- add_random(subj = 60) %>%
+df_simu <- add_random(subj = 60) %>%
+  add_random(trial = 30, .nested_in = "subj") %>% 
   add_within("subj", type_of_picture = c("negative","positive")) %>%
   add_between("subj",Groups = c("depression", "control")) %>%
-  add_contrast("type_of_picture", "anova", add_cols = TRUE,colnames  = "type") %>%
-  add_contrast("Groups", "anova", add_cols = TRUE,colnames = "Group")
+  add_contrast("type_of_picture", "anova", add_cols = TRUE, colnames = "type") %>%
+  add_contrast("Groups", "anova", add_cols = TRUE, colnames = "Group")
 ```
+
 接着设置固定效应值，并生成固定效应的总值。
 ```{r}
 subj_n = 60   # 被试数,抑郁患者组30人，健康控制组30人
-b0 = 2.5     # 截距
-b1 = 4.2     # 图片类型的固定效应
-b2 = 4.5       # 组别的固定效应
-b3 = 2.4     # 图片类型与组别的交互效应
+b0 = 2.5      # 截距 (所有条件的均值)
+b1 = 4.2      # 图片类型的固定效应 (主效应)
+b2 = 4.5      # 组别的固定效应 (主效应)
+b3 = 2.4      # 图片类型与组别的交互作用
 fixed_true=c(b0,b1,b2,b3) 
 ```
+
 设置随机效应，并生成随机效应的总值。
 ```{r}
-u0s= 0.01      # 被试的随机截距值
-u1s=0.01       # 被试的随机斜率值
-u2s=0.03      # 组别的随机截距值
-u3s=0.01      # 组别的随机斜率值
+u0s = 0.01      # 被试的随机截距值
+u1s = 0.01      # 被试的随机斜率值 (图片类型)
 u_sd_subj_true=c(u0s,u1s)
-u_sd_Group_true=c(u2s,u3s)
-data <- data %>%
-  # 添加关于被试的随机截距和随机斜率
-  add_ranef(c("subj","type"), u0s, u1s) %>%
-  # 添加关于被试的组别的随机截距和随机斜率
-  add_ranef(c("Group","type"), u2s, u3s) %>%
+
+df_simu <- df_simu %>%
+  # 添加关于被试的随机截距
+  add_ranef("subj", u0s = 0.01) %>%
+  # 添加关于被试的随机斜率 (图片类型)
+  add_ranef(c("subj","type"), u1s = 0.01) %>%
   # 添加观察值的误差项
   add_ranef(sigma = 0.1)
 ```
+
 最后根据设置的固定效应和随机效应参数值，生成因变量。
 ```{r}
-data <-data %>%
-  mutate(LPP = b0 +(b1+u0s+u2s)* type + b2 * Group + b3*type*Group+u0s+u3s+ sigma)
-head(data,10) #查看生成的数据矩阵
+df_simu <- df_simu %>%
+  mutate(LPP = (b0+u0s) + (b1+u1s) * type + b2 * Group + b3*type*Group + sigma)
+
+head(df_simu,10) #查看生成的数据矩阵
 ```
 # 数据分析
 
@@ -74,7 +79,13 @@ head(data,10) #查看生成的数据矩阵
 
 为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。这里的实验数据的先验将采用brms包自带的默认先验设置。如果不是特别清楚data参数后面的参数设置，可以选用默认设置，示例代码拟合的是高斯模型。summary可以帮助我们展示模型拟合后的参数情况。plot可以显示模型拟合后的参数的分布情况以及mcmc的抽样情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat<=1.01说明模型的收敛情况较好。
 ```{r}
-model_1 <- brm(LPP ~ Group + type, data = data,family="gaussian",cores = 4,chains = 4,warmup =500,iter = 1000)
+model_1 <- brm(LPP ~ Group + type, 
+               data = df_simu,
+               family="gaussian",
+               cores = 4,
+               chains = 4,
+               warmup = 1000,
+               iter = 2000)
 summary(model_1)
 plot(model_1)
 conditional_effects(model_1)
@@ -86,21 +97,24 @@ model_2 <- brm(LPP ~ Group * type, data = data,family="gaussian",cores = 4,chain
 summary(model_2)
 plot(model_2)
 ```
+
 紧接着接下来在后面的模型中加入一些随机截距。
 ```{r}
-model_3 <- brm(LPP ~ Group * type +(1|subj)+(1+Group), data = data,family="gaussian",cores = 4,chains = 4,warmup =500,iter = 1000)
+model_3 <- brm(LPP ~ Group * type + (1 |subj), data = data,family="gaussian",cores = 4,chains = 4,warmup =500,iter = 1000)
 summary(model_3)
 plot(model_3)
 ```
+
 在前面的代码基础之上加上随机斜率。探究在不同被试，不同组别下图片对LPP波幅的影响。
 ```{r}
-model_4 <- brm(LPP ~ Group * type +(1+type|Group)+(1+type|subj), data = data,family="gaussian",cores = 4,chains = 4,warmup =500,iter = 1000)
+model_4 <- brm(LPP ~ Group * type + (1 + type | subj), data = data,family="gaussian",cores = 4,chains = 4,warmup =500,iter = 1000)
 summary(model_4)
 plot(model_4)
 ```
+
 至此我们已将被试和组别的随机效应也已纳入模型的考量之中。但是哪种模型更加能够揭示自变量与因变量之间的关系呢，我们尚不清楚，接下来还需要进行模型比较。
 
-#模型比较
+#模型比较 [这个我们可能先不介绍]
 模型之间进行比较，可以帮助我们选择最优的模型。在模型比较中，可以选择多种模型拟合指标去比较，一般推荐looIC进行比较 @vehtariPracticalBayesianModel2017a。首选模型为最佳模型，其elpd_diff的值为0。
 ```{r}
 loo_compare(loo(model_1),loo(model_2),loo(model_3),loo(model_4))
@@ -132,8 +146,7 @@ as.data.frame(model_4) %>%
 # 组间差异以及组内差异的比较
 研究中通常需要比较组间差异亦或者组内各条件的差异。使用贝叶斯模型进行组间或者组内条件比较时需要注意，在贝叶斯混合线性模型中，一般可以将组间条件和组内条件的参数纳入，从而比较组间因素与组内因素相关的参数。首先我们可以检验差值分布（difference distribution）的95%最高后验密度（highest posterior density）或者置信区间是否包含0进行判断参数在组间或者组内是否有显著性差异。如果0在95%区间之外，即这可以认为存在差异。需要注意的是，在论文写作中我们需要报告各参数的95%置信区间。
 ```{r}
-library(tidybayes)
-library(emmeans)
+
 samp1 <- model_4 %>%
   emmeans("Group", by = "type") %>% 
   pairs %>% 
