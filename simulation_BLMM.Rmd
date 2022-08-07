@@ -15,9 +15,13 @@ output:
 csl: apa.csl
 bibliography: BLMM_Ref.bib
 ---
-```{r setup, include=FALSE}
+
+```{r include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(rbbt)
+```
+
+```{r setup}
 #加载需要使用的R包
 if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
@@ -27,53 +31,93 @@ if (!require(emmeans)) {library(emmeans)}
 if (!require(tidybayes)) {library(tidybayes)}
 set.seed(2022)
 ```
-# 假定的心理学实验设计
-我们模拟一个实验设计。实验的目的是探究抑郁症患者观看不同类型图片下对晚期正电位（late positive potentials, LPP）的影响。首先我们招募抑郁症患者和健康对照组各30人，然后选取正性图片和负性图片各30张，作为刺激变量，对被试进行测试，同时记录其脑电的变化。在实验中主要观察LPP的变化。在数据生成中我们将采用 @lisaFauxSimulationFactorial2021 的R包进行混合实验设计数据的生成。开始之前我们先设置一些参数的真实值，以便后续的模型拟合结果对照预设的参数真实值。在起始阶段先设置固定效应，将图片的类型编码(contrast-coded)成-0.5和0.5(负性类型图片编码成-0.5，正性图片编码成0.5)。
 
+# 假想的心理学实验
+我们借助一个假想的实验来展示如何使用贝叶斯混合模型分析实验心理学的数据。该实验的目的是探究抑郁症患者加工不同类型图片的神经基础。在该实验中，我们招募了抑郁症患者和健康对照组被试各30人。所有的被试都观看了30张正性图片和30张负性图片，且每张图片呈现10次。在实验过程中，我们记录了被试的脑电。我们所关注的因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别`group`：抑郁症患者`depression`、对照组；被试间`control`) $\times$ 2 (图片类型`type`：正性`positive`、负性`negative`；被试内) 的混合实验设计。
+
+## 模拟数据
+我们采用 @lisaFauxSimulationFactorial2021 的`library(faux)`包生成该假想实验的数据。具体假定参数如下：
+
+```{r}
+subj_n <- 60   # 总被试量：抑郁患者30人，健康控制组被试30人
+trial_n <- 10  # 每张图片呈现的次数
+
+# 固定效应
+b0 <- 2.5      # 截距 (所有条件的均值)
+b1 <- 4.2      # 图片类型的固定效应 (主效应)
+b2 <- 4.5      # 组别的固定效应 (主效应)
+b3 <- 2.4      # 图片类型与组别的交互作用
+fixed_true <- c(b0,b2,b1,b3) 
+
+# 随机效应
+u0s <- 2    # 被试的随机截距
+u1s <- 2    # 被试的随机斜率 (图片类型)
+u_sd_subj_true <- c(u0s,u1s)
+
+# 误差项
+sigma <- 4
+```
+
+根据假定的实验设计和参数来生成模拟数据：
 ```{r}
 #生成假定实验的条件的数据矩阵
-df_simu <- add_random(subj = 60) %>%
-  add_random(trial = 30, .nested_in = "subj") %>% 
-  add_within("subj", type_of_picture = c("negative","positive")) %>%
-  add_between("subj",Groups = c("depression", "control")) %>%
-  add_contrast("type_of_picture", "anova", add_cols = TRUE, colnames = "type") %>%
-  add_contrast("Groups", "anova", add_cols = TRUE, colnames = "Group")
-#接着设置固定效应值，并生成固定效应的总值。
-subj_n = 60   # 被试数,抑郁患者组30人，健康控制组30人
-b0 = 2.5      # 截距 (所有条件的均值)
-b1 = 4.2      # 图片类型的固定效应 (主效应)
-b2 = 4.5      # 组别的固定效应 (主效应)
-b3 = 2.4      # 图片类型与组别的交互作用
-fixed_true=c(b0,b2,b1,b3) 
-#设置随机效应，并生成随机效应的总值。
-u0s = 0.01      # 被试的随机截距值
-u1s = 0.01      # 被试的随机斜率值 (图片类型)
-u_sd_subj_true=c(u0s,u1s)
-
-df_simu <- df_simu %>%
-  # 添加关于被试的随机截距
-  add_ranef("subj", u0s = 0.01) %>%
-  # 添加关于被试的随机斜率 (图片类型)
-  add_ranef(c("subj","type"), u1s = 0.01) %>%
+df_simu <- add_random(subj = subj_n) %>%
+  # 添加被试的组别信息（被试间）
+  add_between("subj", group = c("depression", "control")) %>%
+  # 添加图片类型的信息（被试内）
+  add_within("subj", type = c("negative","positive")) %>%
+  # 每个图片呈现10次
+  add_random(trial = trial_n, .nested_in = "subj") %>%
+  # 图片类型的编码：负性=-0.5；正性=0.5
+  add_contrast("type", "anova", add_cols = TRUE, colnames = "type_code") %>%
+  # 被试组别的编码：抑郁症组=-0.5；控制组=0.5
+  add_contrast("group", "anova", add_cols = TRUE, colnames = "group_code") %>% 
+  # 添加基于被试的随机截距
+  add_ranef("subj", u0s = u0s) %>% 
+  # 添加基于被试的随机斜率 (图片类型)
+  add_ranef(c("subj","type"), u1s = u1s, .cors=0.5) %>%
   # 添加观察值的误差项
-  add_ranef(sigma = 0.1)
-#最后根据设置的固定效应和随机效应参数值，生成因变量。
-df_simu <- df_simu %>%
-  mutate(LPP = (b0+u0s) + (b1+u1s) * type + b2 * Group + b3*type*Group + sigma)
+  add_ranef(sigma = sigma) %>% 
+  # 最后根据设置的固定效应和随机效应参数值，生成因变量。
+  mutate(LPP = (b0+u0s) +         # 截距
+           (b1+u1s) * type_code + # 图片材料的斜率
+           b2 * group_code +      # 组别的斜率
+           b3 * type_code * group_code +   # 交互作用
+           sigma)            
+
 head(df_simu,10) #查看生成的数据矩阵
 ```
+
+```{r}
+df_simu <- df_simu %>% 
+  select(subj, group, type, LPP) # 去除冗余的信息
+# 设定-0.5和0.5的编码
+contrasts(df_simu$group) <- MASS::contr.sdif(2)
+contrasts(df_simu$type) <- MASS::contr.sdif(2)
+
+head(df_simu, 10)
+```
+
+
 # 数据分析
 接下来对数据进行建构贝叶斯线性混合模型。在这部分将使用brms的R包 @burknerBrmsPackageBayesian2017a进行分析。brms目前常用贝叶斯模型分析之中 @burknerBayesianDistributionalNonLinear @burknerAdvancedBayesianMultilevel2017;  @ladislasIntroductionBayesianMultilevel2019;  @vasishthBayesianDataAnalysis2018。关于brms包的更多详细内容可以见以下的网址https://paul-buerkner.github.io/brms/。
+
+## （增加一下小标题；其他模型前也最好加一下）
+
 为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。这里的实验数据的先验将采用brms包自带的默认先验设置。如果不是特别清楚data参数后面的参数设置，可以选用默认设置，示例代码拟合的是高斯模型。summary可以帮助我们展示模型拟合后的参数情况。plot可以显示模型拟合后的参数的分布情况以及mcmc的抽样情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat<=1.01说明模型的收敛情况较好。
+【这里需要介绍一下每一个argument的具体作用】
+
 ```{r}
+# 定义参数的先验信息
 prior = c(
-                  prior(normal(0, 5), class = Intercept),
-                  prior(normal(0, 5), class = b),
-                  prior(normal(0, 5), class = sigma),
-                  prior(normal(0, 2), class = sd),
-                  prior(lkj(2), class = cor)
-                )
-model_1 <- brm(LPP ~ Group * type, 
+  prior(normal(0, 5), class = Intercept),
+  prior(normal(0, 5), class = b),
+  prior(normal(0, 5), class = sigma),
+  prior(normal(0, 2), class = sd),
+  prior(lkj(2), class = cor)
+)
+
+model_1 <- brm(LPP ~ group * type, 
                data = df_simu,
                family="gaussian",
                cores = 4,
@@ -81,14 +125,22 @@ model_1 <- brm(LPP ~ Group * type,
                warmup = 2000,
                iter = 10000,
                sample_prior ="yes")
+
 summary(model_1)#查看参数情况
-plot(model_1)#查看每个参数的分布和抽样情况
 ```
+【这里需要解释如何来理解输出的结果；后面的每一个新模型，也需要介绍输出中多了哪些部分，如何理解】
+
+
+```{r}
+plot(model_1)  #查看每个参数的分布和抽样情况
+```
+
+【这里需要解释如何来理解这个图】
 
 以上的代码只是加入了组别和图片类型的变量，如果我们想更好地了解这两个因素的交互效应可以采用下面的代码。
 紧接着接下来在后面的模型中加入一些随机截距。
 ```{r}
-model_2 <- brm(LPP ~ Group * type + (1 |subj), 
+model_2 <- brm(LPP ~ group * type + (1 |subj), 
                data = df_simu,
                family="gaussian",
                cores = 4,
@@ -102,7 +154,7 @@ plot(model_2)
 
 在前面的代码基础之上加上随机斜率。探究在不同被试下图片类型对LPP波幅的影响。
 ```{r}
-model_3 <- brm(LPP ~ Group * type + (1 + type | subj), 
+model_3 <- brm(LPP ~ group * type + (1 + type | subj), 
                data = df_simu,
                family="gaussian",
                cores = 4,
@@ -112,6 +164,7 @@ model_3 <- brm(LPP ~ Group * type + (1 + type | subj),
                sample_prior ="yes",
                prior=prior)
 summary(model_3)
+# 【每一个function的具体作用也需要解释】
 plot(model_3)
 plot(model_3, variable = "^b", regex = TRUE)
 conditional_effects(model_3)#
@@ -138,14 +191,14 @@ as.data.frame(model_3) %>%
 ```{r}
 #组间比较
 samp1 <- model_3 %>%
-  emmeans("Group", by = "type") %>% 
+  emmeans("group", by = "type") %>% 
   pairs %>% 
   gather_emmeans_draws()
 samp1 %>% 
   median_hdi()
 #组内比较
 samp1 <- model_3 %>%
-  emmeans("type", by = "Group") %>% 
+  emmeans("type", by = "group") %>% 
   pairs %>% 
   gather_emmeans_draws()
 samp1 %>% 
@@ -156,13 +209,13 @@ samp1 %>%
 虽然比较最高后验密度以及95%的可信区间，是目前比较推荐采用的方法，但是对于习惯使用p值的研究者们来说，这似乎并不受欢迎。在心理学研究中，许多贝叶斯统计的支持者主张使用贝叶斯因子进行假设检验 @rouderBayesianInferencePsychology2018。在以下的代码中我们将采用贝叶斯因子对组间差异以及组内差异进行检验。可以使用brms的hypothesis函数进行假设检验，并从中提取出贝叶斯因子。
 ```{r}
 #组内比较?
-n=hypothesis(model_3,"type=0")
+n=hypothesis(model_3,"type2M1=0")
 n$hypothesis$Evid.Ratio
 n
 plot(n)
 
 #组间比较?
-m=hypothesis(model_3,"Group=0")
+m=hypothesis(model_3,"group2M1=0")
 m$hypothesis$Evid.Ratio
 m
 plot(m)
@@ -176,7 +229,7 @@ loo_compare(loo(model_1),loo(model_2),loo(model_3))
 ```
 
 # 缺失值处理
-由于实验操作过程中难免会出现失误，可能最后数据中难免出现缺失值。最简单的解决方法无非是将缺失的地方进行删除，但是如果该数值并不是完全随机缺失的，这就可能导致数据分析中出现偏差。一般可以采用两种方法处理缺失值。一是在模型拟合之前将缺失值进行多重插值；二是在模型拟合过程中进行动态地进行缺失值的多重插值。这个可以采用mi函数进行多重插值。更多详细内容可以参考https://cran.r-project.org/web/packages/brms/vignettes/brms_missings.html 。
+由于实验操作过程中难免会出现失误，可能最后数据中难免出现缺失值。最简单的解决方法无非是将缺失的地方进行删除，但是如果该数值并不是完全随机缺失的，这就可能导致数据分析中出现偏差。一般可以采用两种方法处理缺失值。一是在模型拟合之前将缺失值进行多重插值；二是在模型拟合过程中进行动态地进行缺失值的多重插值。这个可以采用mi函数进行多重插值。更多详细内容可以参考https://cran.r-project.org/web/packages/brms/vignettes/brms_missings.html。
 
 
 # 参考文献
