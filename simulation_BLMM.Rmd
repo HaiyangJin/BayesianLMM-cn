@@ -17,11 +17,13 @@ bibliography: BLMM_Ref.bib
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set()
+library(papaja)
 library(rbbt)
+library(rio)
 ```
 
-```{r setup}
+```{r setup, results='hide'}
 #加载需要使用的R包
 if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
@@ -29,6 +31,7 @@ if (!require(brms)) {library(brms)}
 if (!require(bayesplot)) {library(bayesplot)}
 if (!require(emmeans)) {library(emmeans)}
 if (!require(tidybayes)) {library(tidybayes)}
+if (!require(bayestestR)) {library(bayestestR)}
 set.seed(2022)
 ```
 
@@ -36,10 +39,10 @@ set.seed(2022)
 我们借助一个假想的实验来展示如何使用贝叶斯混合模型分析实验心理学的数据。该实验的目的是探究抑郁症患者加工不同类型图片的神经基础。在该实验中，我们招募了抑郁症患者和健康对照组被试各30人。所有的被试都观看了30张正性图片和30张负性图片，且每张图片呈现10次。在实验过程中，我们记录了被试的脑电。我们所关注的因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别`group`：抑郁症患者`depression`、对照组；被试间`control`) $\times$ 2 (图片类型`type`：正性`positive`、负性`negative`；被试内) 的混合实验设计。
 
 ## 模拟数据
-我们采用 @lisaFauxSimulationFactorial2021 的`library(faux)`包生成该假想实验的数据。具体假定参数如下：
+我们采用 @debruineFauxSimulationFactorial2021 的`library(faux)`包生成该假想实验的数据。具体假定参数如下：
 
-```{r}
-subj_n <- 60   # 总被试量：抑郁患者30人，健康控制组被试30人
+```{r results='hide'}
+subj_n <- 60   # 总被试量：抑郁患者30人，健康对照组被试30人
 trial_n <- 10  # 每张图片呈现的次数
 
 # 固定效应
@@ -59,7 +62,7 @@ sigma <- 4
 ```
 
 根据假定的实验设计和参数来生成模拟数据：
-```{r}
+```{r, results='hide'}
 #生成假定实验的条件的数据矩阵
 df_simu <- add_random(subj = subj_n) %>%
   # 添加被试的组别信息（被试间）
@@ -88,35 +91,30 @@ df_simu <- add_random(subj = subj_n) %>%
 head(df_simu,10) #查看生成的数据矩阵
 ```
 
-```{r}
+```{r results='hide'}
 df_simu <- df_simu %>% 
   select(subj, group, type, LPP) # 去除冗余的信息
 # 设定-0.5和0.5的编码
 contrasts(df_simu$group) <- MASS::contr.sdif(2)
 contrasts(df_simu$type) <- MASS::contr.sdif(2)
 
-head(df_simu, 10)
+head(df_simu, 5)#查看数据结构
 ```
 
 
 # 数据分析
-接下来对数据进行建构贝叶斯线性混合模型。在这部分将使用brms的R包 @burknerBrmsPackageBayesian2017a进行分析。brms目前常用贝叶斯模型分析之中 @burknerBayesianDistributionalNonLinear @burknerAdvancedBayesianMultilevel2017;  @ladislasIntroductionBayesianMultilevel2019;  @vasishthBayesianDataAnalysis2018。关于brms包的更多详细内容可以见以下的网址https://paul-buerkner.github.io/brms/。
+接下来对数据进行建构贝叶斯线性混合模型。在这部分将使用`brms`的R包 @burknerBrmsPackageBayesian2017a 进行分析。`brms`目前常用贝叶斯模型分析之中 @burknerBayesianDistributionalNonLinear @burknerAdvancedBayesianMultilevel2017;  @ladislasIntroductionBayesianMultilevel2019;  @vasishthBayesianDataAnalysis2018。关于`brms`包的更多详细内容可以见以下的网址https://paul-buerkner.github.io/brms/ 。
 
-## （增加一下小标题；其他模型前也最好加一下）
-
-为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。这里的实验数据的先验将采用brms包自带的默认先验设置。如果不是特别清楚data参数后面的参数设置，可以选用默认设置，示例代码拟合的是高斯模型。summary可以帮助我们展示模型拟合后的参数情况。plot可以显示模型拟合后的参数的分布情况以及mcmc的抽样情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat<=1.01说明模型的收敛情况较好。
-【这里需要介绍一下每一个argument的具体作用】
-
-```{r}
+## 添加固定效应
+为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。在`model_1`中，`LPP`是因变量，`group`和`type`是自变量。`family`代表模型中使用的反应分布和相关函数。`prior`定义了模型的先验信息，如果不设置这个参数，那么模型建立中*先验*会默认使用均匀分布。`summary`可以帮助我们展示模型拟合后的参数情况。`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup` '迭代来近似后端分布的形状。`plot`可以显示模型拟合后的参数的分布情况以及MCMC情况的图示化结果。如果想要了解更多，可以见 @McElreath:2016 。
+```{r, results = "hide"}
 # 定义参数的先验信息
-prior = c(
+prior <- c(
   prior(normal(0, 5), class = Intercept),
   prior(normal(0, 5), class = b),
-  prior(normal(0, 5), class = sigma),
-  prior(normal(0, 2), class = sd),
-  prior(lkj(2), class = cor)
+  prior(normal(0, 5), class = sigma)
 )
-
+#建立模型
 model_1 <- brm(LPP ~ group * type, 
                data = df_simu,
                family="gaussian",
@@ -124,22 +122,63 @@ model_1 <- brm(LPP ~ group * type,
                chains = 4,
                warmup = 2000,
                iter = 10000,
-               sample_prior ="yes")
-
+               sample_prior ="yes",
+               prior = prior)
 summary(model_1)#查看参数情况
+plot(model_1)   #查看每个参数的分布和抽样情况
 ```
-【这里需要解释如何来理解输出的结果；后面的每一个新模型，也需要介绍输出中多了哪些部分，如何理解】
+```{r echo=FALSE}
+summary(model_1)#可以查看参数情况
+```
 
+`Population-Level Effects`代表固定效应部分参数的后验情况。Intercept 代表模型中的固定截距。`group2M1`代表$\beta_{(group)}$，指的是组别变量的固定斜率。`type2M1`代表$\beta_{(type)}$，指的是图片类型变量的固定斜率。 `group2M1:type2M1`代表组别和图片类型交互作用的固定斜率。`Estimate`表示参数的估计值，`Est.Error`代表估计值的标准误。`l-95% CI`和`u-95% CI`代表参数的可信区间。`sigma`代表残差项的后验分布参数。 `Rhat`代表参数的收敛情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat应该尽量接近于1，这说明模型的收敛情况较好，但是尽量不要超过1.01。另外也可以使用`bayestestR` 包的函数进行判断模型的收敛情况。
 
-```{r}
+```{r, eval=FALSE}
+if (!require(bayestestR)) {library(bayestestR)}
+post_diag<- diagnostic_posterior(model_1)
+effectsize::interpret_rhat(post_diag$Rhat)
+```
+
+```{r,echo=FALSE,results = "hide"}
+a <- summary(model_1)
+summary_model_1 <- rbind(data.frame(a$fixed))
+rownames(summary_model_1) <- c("截距", "$\\beta_{(group)}$", "$\\beta_{(type)}$", "$\\beta_{(group:type)}$")
+colnames(summary_model_1) <- c("后验均值","标准误", "下限", "上限", "Rhat","Bulk_ESS","Tail_ESS")
+
+summary_model_1 %>%
+    select(c(-Bulk_ESS,-Tail_ESS)) %>% # removing ESS
+    rownames_to_column(var = "参数")
+```
+```{r,echo=FALSE,results = "asis"}
+apa_table(
+    summary_model_1,
+    placement = "H",
+    align = c("c", "c", "c", "c", "c", "c"),
+    caption = "model_1的后验均值, 标准误, 95%的可信区间以及Rhat",
+    note = NULL,
+    small = TRUE,
+    digits = 3,
+    escape = FALSE
+    )
+```
+
+表 \@ref(tab:Table_1)显示了model_1拟合后的参数的后验情况，包括后验分布均值，标准误，95%的可信区间以及Rhat。
+
+```{r plot_model_1, dpi = 300, echo = FALSE, fig.pos = "H", fig.cap = "左列是参数的后验分布图，右列是参数抽样的轨迹图。"}
 plot(model_1)  #查看每个参数的分布和抽样情况
 ```
 
-【这里需要解释如何来理解这个图】
+图 \@ref(fig:plot_model_1) 描述了model_1中固定截距、固定斜率、残差的后验分布以及MCMC抽样情况。图的左边是参数的后验分布，x轴代表参数值；图的右边是逼近后验分布的两个行为的模拟(即4条链的轨迹图)，x轴代表迭代数，y轴代表参数值。这轨迹图显示了平均值周围的随机波动。
 
-以上的代码只是加入了组别和图片类型的变量，如果我们想更好地了解这两个因素的交互效应可以采用下面的代码。
-紧接着接下来在后面的模型中加入一些随机截距。
-```{r}
+## 添加随机效应
+接下来在后面的模型中加入一些随机截距。
+```{r, results = "hide"}
+prior = c(
+  prior(normal(0, 5), class = Intercept),
+  prior(normal(0, 5), class = b),
+  prior(normal(0, 5), class = sigma),
+  prior(normal(0, 2), class = sd)
+)
 model_2 <- brm(LPP ~ group * type + (1 |subj), 
                data = df_simu,
                family="gaussian",
@@ -147,13 +186,25 @@ model_2 <- brm(LPP ~ group * type + (1 |subj),
                chains = 4,
                warmup =2000,
                iter = 10000,
-               sample_prior ="yes")
-summary(model_2)
-plot(model_2)
+               sample_prior ="yes",
+               prior = prior)
+summary(model_2)#查看参数情况
+plot(model_2)   #查看每个参数的分布和抽样情况
 ```
+```{r echo=FALSE}
+summary(model_2)#可以查看参数情况
+```
+`Population-Level Effects`是model_2的固定效应部分，解释与`model_1`类似。与`model_1`不同，`model_2`加入了随机截距部分。 `Group-Level Effects`则是随机截距的参数的后验分布情况。
 
-在前面的代码基础之上加上随机斜率。探究在不同被试下图片类型对LPP波幅的影响。
-```{r}
+然后在`model_2`模型的代码基础之上加上随机斜率,探究在不同被试下图片类型对LPP波幅的影响。
+```{r,results = "hide"}
+prior = c(
+  prior(normal(0, 5), class = Intercept),
+  prior(normal(0, 5), class = b),
+  prior(normal(0, 5), class = sigma),
+  prior(normal(0, 2), class = sd),
+  prior(lkj(2), class = cor)
+)
 model_3 <- brm(LPP ~ group * type + (1 + type | subj), 
                data = df_simu,
                family="gaussian",
@@ -163,19 +214,22 @@ model_3 <- brm(LPP ~ group * type + (1 + type | subj),
                iter = 10000,
                sample_prior ="yes",
                prior=prior)
-summary(model_3)
-# 【每一个function的具体作用也需要解释】
-plot(model_3)
-plot(model_3, variable = "^b", regex = TRUE)
-conditional_effects(model_3)#
-pos<- posterior::as_draws_matrix(model_3)
+
+summary(model_3)#查看参数情况
+plot(model_3) #查看每个参数的后验分布和抽样情况
+plot(model_3, variable = "^b", regex = TRUE)#查看固定效应部分的参数分布情况
 ```
+```{r echo=FALSE}
+summary(model_2)#可以查看参数情况
+```
+`Population-Level Effects`是model_3的固定效应部分，解释与`model_1`类似。与`model_2`不同，`model_2`加入了随机斜率部分。 `Group-Level Effects`则是随机截距以及随机斜率的参数的后验分布情况。
+
 至此我们已经完成了线性混合模型的建构。
 
 # 模型拟合效果与真实值比较
 在这部分，我们验证一下模型拟合效果，将模型拟合参数与预设的参数真实值之间进行对比。
-```{r}
-#比较固定效应中各参数与之前设置的总体参数（真实值）之间的比较。
+```{r eval=FALSE}
+#比较固定效应中各参数与之前设置的总体参数（即真实值）之间的比较。
 as.data.frame(model_3) %>%
   select(starts_with("b_")) %>%
   mcmc_recover_hist(true = fixed_true) 
@@ -184,51 +238,60 @@ as.data.frame(model_3) %>%
   select(starts_with("sd_subj")) %>%
   mcmc_recover_hist(true = u_sd_subj_true) 
 ```
-从以上的图来看，还是比较模型拟合的参数的分布还是包含预设值的。不过对于研究者来说，更重要的还是想比较组间差异，两组之间的LPP波幅是否存在显著性的差异。我们可以通过贝叶斯因子（Bayesian factor,BF）对模型拟合的一些参数进行比较 @heckReviewApplicationsBayes2022;  @schadWorkflowTechniquesRobust2022;  @wagenmakersBayesianHypothesisTesting2010，从而更好地观察两个组有关自变量因素是否存在差异，这样更能够解释两组之间是否存在差异。
+```{r plot_mode_comparion_1,echo = FALSE, eval = TRUE, dpi = 300, echo = TRUE, fig.pos = "H",fig.cap="固定效应中各参数与之前设置的总体参数（即真实值）之间的比较"}
+#比较固定效应中各参数与预设的总体参数（即真实值）之间的比较。
+as.data.frame(model_3) %>%
+  select(starts_with("b_")) %>%
+  mcmc_recover_hist(true = fixed_true) 
+```
+
+```{r plot_mode_comparion_2, echo = FALSE, eval = TRUE,dpi = 300, echo = TRUE, fig.pos = "H",fig.cap="预设的被试随机效应总体参数(即真实值)和拟合的被试的随机效应的估计参数"}
+as.data.frame(model_3) %>%
+  select(starts_with("sd_subj")) %>%
+  mcmc_recover_hist(true = u_sd_subj_true) 
+```
+
+从图\@ref(fig:plot_mode_comparion_1)和图\@ref(fig:plot_mode_comparion_2)中可知,模型拟合的参数的分布还是包含预设值的，这表明模型拟合度还是比较好的。不过对于研究者来说，更重要的还是想比较组间差异：两组之间的LPP波幅是否存在显著性的差异。我们可以通过贝叶斯因子（Bayesian factor,BF）对模型拟合的一些参数进行比较 @heckReviewApplicationsBayes2022;  @schadWorkflowTechniquesRobust2022;   @wagenmakersBayesianHypothesisTesting2010，从而更好地观察两个组相关的自变量因素对因变量是否存在差异，这样更能够解释两组之间是否存在差异。
 
 # 组间差异以及组内差异的比较
-研究中通常需要比较组间差异亦或者组内各条件的差异。使用贝叶斯模型进行组间或者组内条件比较时需要注意，在贝叶斯混合线性模型中，一般可以将组间条件和组内条件的参数纳入，从而比较组间因素与组内因素相关的参数。首先我们可以检验差值分布（difference distribution）的95%最高后验密度（highest posterior density）或者可信区间是否包含0进行判断参数在组间或者组内是否有显著性差异。如果0在95%区间之外，即这可以认为存在差异。需要注意的是，在论文写作中我们需要报告各参数的95%置信区间。
-```{r}
-#组间比较
-samp1 <- model_3 %>%
-  emmeans("group", by = "type") %>% 
-  pairs %>% 
-  gather_emmeans_draws()
-samp1 %>% 
-  median_hdi()
+研究中通常需要比较组间差异或者组内各条件的差异。使用贝叶斯模型进行组间或者组内条件比较时需要注意，在贝叶斯混合线性模型中，一般可以将组间条件和组内条件的参数纳入，从而比较组间因素与组内因素相关的参数。我们可以通过 @makowskiBayestestRDescribingEffects2019 计算模型中的可信区间、最大后验概率估计(Maximum A Posteriori, MAP)、显著性方向概率(Probability of Direction, pd)、全后验分布百分比（percentage of the full posterior distribution,ROPE）、贝叶斯因子（Bayes factor, BF）等 @makowskiIndicesEffectExistence2019。在贝叶斯模型参数比较中，比较推荐报告以上的指标 @makowskiIndicesEffectExistence2019。ROPE中的百分比是一个重要的指数，它一定程度上可以作为显著性指数的标准 @makowskiIndicesEffectExistence2019。关于模型参数报告的更多详细内容可见 https://easystats.github.io/bayestestR/articles/guidelines.html。
+```{r para_comprion,eval=FALSE,echo=TRUE}
+describe_posterior(model_3,centrality = "all", dispersion = TRUE,ci =0.95,test = "all")
+```
+从以上的输出可知，在两组比较中，我们会发现，$\beta_{group}$参数的ROPE的百分比<1%，这说明我们可以拒绝零假设，两组之间存在显著的差异性。而$\beta_{(type)}$的ROPE的百分比<1%，这说明我们可以拒绝零假设，抑郁症患者和健康对照组中正性图片和负性图片存在显著性的差异。
+
+当然在心理学研究中，有不少的贝叶斯统计的支持者主张使用贝叶斯因子进行假设检验 @rouderBayesianInferencePsychology2018。在以下的代码中我们将采用直接计算贝叶斯因子对组间差异以及组内差异进行检验。使用`brms`的`hypothesis`函数进行假设检验，并从中提取出贝叶斯因子。
+```{r include=FALSE}
 #组内比较
-samp1 <- model_3 %>%
-  emmeans("type", by = "group") %>% 
-  pairs %>% 
-  gather_emmeans_draws()
-samp1 %>% 
-  median_hdi()
-```
-从表中得知，在两组比较中，我们会发现，抑郁症患者组和健康对照组在两种刺激条件下的置信区间不包括0。这说明两组在之间有显著的差异性。在抑郁症患者组和健康对照组beta(type)置信区间都不包含0，说明抑郁症患者和健康对照组中正性图片和负性图片下存在显著性的差异。
-
-虽然比较最高后验密度以及95%的可信区间，是目前比较推荐采用的方法，但是对于习惯使用p值的研究者们来说，这似乎并不受欢迎。在心理学研究中，许多贝叶斯统计的支持者主张使用贝叶斯因子进行假设检验 @rouderBayesianInferencePsychology2018。在以下的代码中我们将采用贝叶斯因子对组间差异以及组内差异进行检验。可以使用brms的hypothesis函数进行假设检验，并从中提取出贝叶斯因子。
-```{r}
-#组内比较?
 n=hypothesis(model_3,"type2M1=0")
-n$hypothesis$Evid.Ratio
+withinGroup_comparion_BF=n$hypothesis$Evid.Ratio
 n
-plot(n)
+withinGroup_comparion_BF
+plot(n)#查看参数比较的先验分布和后验分布
 
-#组间比较?
+#组间比较
 m=hypothesis(model_3,"group2M1=0")
-m$hypothesis$Evid.Ratio
+group_comparion_BF=m$hypothesis$Evid.Ratio
+group_comparion_BF #查看贝叶斯因子
 m
-plot(m)
+plot(m)#
 ```
-通过hypothesis$Evid.Ratio，我们可以得到BF01，而BF10=1/BF01，而在beta（Group）以及beta（type）中，BF01>0且<1，则BF10则趋于无穷大，这表明越支持备择假设，说明在组间和组内都存在显著的差异。
 
-# 模型比较
-在数据处理中，我们纳入不同的参数，建立不同的贝叶斯混合线性模型。如何判断构建的哪种模型比较好，这便需要进行模型比较了。在贝叶斯分析中，常用LOOIC指标进行判断 @vehtariPracticalBayesianModel2017。在brms的R包中，我们可以采用loo函数进行计算LOOIC。数值越小，代表模型拟合度更佳。
+通过`hypothesis$Evid.Ratio`，我们可以得到$BF_{01}$，而$BF_{10}$ = 1/ $BF_{01}$。在$\beta_{(group)}$ 以及$\beta_{(type)}$中，$BF_{01}$>0且<1，则$BF_{10}$则趋于无穷大，这表明越支持备择假设。说明在组间和组内都存在显著的差异。
+
+# 模型拟合常见问题
+
+## 模型不收敛
+模型不能收敛时，需要考虑是否模型建立得过于复杂，可以适当减少模型纳入的参数，达到简化模型。
+
+
+## 模型比较
+在数据处理中，我们纳入不同的参数，建立不同的贝叶斯混合线性模型。如何判断构建的哪种模型比较好，这便需要进行模型比较了。在贝叶斯分析中，常用LOOIC指标进行判断 @vehtariPracticalBayesianModel2017。在brms的R包中，我们可以采用loo函数进行计算LOOIC。数值越小，代表模型拟合度越佳。
 ```{r}
 loo_compare(loo(model_1),loo(model_2),loo(model_3))
 ```
 
-# 缺失值处理
+## 缺失值处理
 由于实验操作过程中难免会出现失误，可能最后数据中难免出现缺失值。最简单的解决方法无非是将缺失的地方进行删除，但是如果该数值并不是完全随机缺失的，这就可能导致数据分析中出现偏差。一般可以采用两种方法处理缺失值。一是在模型拟合之前将缺失值进行多重插值；二是在模型拟合过程中进行动态地进行缺失值的多重插值。这个可以采用mi函数进行多重插值。更多详细内容可以参考https://cran.r-project.org/web/packages/brms/vignettes/brms_missings.html。
 
 
