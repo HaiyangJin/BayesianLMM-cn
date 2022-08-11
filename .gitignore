@@ -1,3 +1,7 @@
+# the main word document
+*.docx
+!main.docx
+
 # History files
 .Rhistory
 .Rapp.history
@@ -46,7 +50,6 @@ docs/
 *.pdf
 ./*.csv
 ./*.html
-*.docx
 *.tex
 *.log
 *.aux
