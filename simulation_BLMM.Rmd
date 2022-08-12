@@ -70,15 +70,13 @@ df_simu <- add_random(subj = subj_n) %>%
   # 添加图片类型的信息（被试内）
   add_within("subj", type = c("negative","positive")) %>%
   # 每个图片呈现10次
-  add_random(trial = trial_n, .nested_in = "subj") %>%
+  add_random(trial = trial_n) %>%
   # 图片类型的编码：负性=-0.5；正性=0.5
-  add_contrast("type", "anova", add_cols = TRUE, colnames = "type_code") %>%
+  add_contrast("type", "anova", colnames = "type_code") %>%
   # 被试组别的编码：抑郁症组=-0.5；控制组=0.5
-  add_contrast("group", "anova", add_cols = TRUE, colnames = "group_code") %>% 
-  # 添加基于被试的随机截距
-  add_ranef("subj", u0s = u0s) %>% 
-  # 添加基于被试的随机斜率 (图片类型)
-  add_ranef(c("subj","type"), u1s = u1s, .cors=0.5) %>%
+  add_contrast("group", "anova",colnames = "group_code") %>% 
+  # 添加基于被试的随机截距和斜率 (图片类型)
+  add_ranef("subj", u0s = u0s, u1s = u1s, .cors=0.5) %>% 
   # 添加观察值的误差项
   add_ranef(sigma = sigma) %>% 
   # 最后根据设置的固定效应和随机效应参数值，生成因变量。
