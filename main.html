@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
+</style>
+<style>
+body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="这是标题">这是标题</h1>
+<p>truetrue</p>
+<h1 id="id_1-引入">1 引入</h1>
+<p>近年来，心理学研究所使用的统计方法日渐丰富。随着新的统计方法的推广与普及，心理学研究者逐渐意识到了一些传统统计方法的局限性。
+重复测量方法分析，作为心理学实验中最常用的统计方法之一，也不例外。例如，重复测量方差分析通常只是对各个条件的均值进行分析，而忽略了这些均值的不确定性（uncertianty）。
+其次，重复测量方法分析一般只能包含一个随机因素（例如，被试或刺激材料），而无法同时考虑多个随机因素；且它无法处理实验数据的复杂层级结构，比如对实验难度的操作嵌套于被试只内，而被试又嵌套于不同的实验组中。
+此外，重复测量方差分析在处理条件均值的缺失时，通常只能删除该被试的所有数据，这会进一步造成数据的流失甚至可能会导致有偏差的估计。</p>
+<p>相比之下，线性混合效应模型（Linear Mixed-effects Model,
+LMM），亦称多水平模型（Multilevel Model）或层级模型（Hierarchical
+Model）可以更好地处理这些问题。
+例如，混合模型可以利用试次水平的数据考虑各个条件均值的不确定性，变量间可能存在的相互依存关系，以及数据中的层级结构，从而能够更好地处理数据缺失，提供更准确的估计和更高的统计检验力
+[@tuerlinckx2006]。 随着统计工具（比如 R
+语言）的成熟，在心理学研究中使用混合效应模型来拟合数据已经不再困难。
+Bono 等 [-@bono2021]
+最近的系统性综述发现，在心理学领域使用线性混合效应模型的研究已经越来越多。随着混合效应模型的应用场景逐渐丰富，以及模型的复杂程度日渐提升，贝叶斯（Bayesian）混合效应模型也因贝叶斯数据分析的独特优势受到了越来越多研究者的关注
+[@sorensen2016] [@burkner2017] 。
+首先，与频率论（Frequentist）相比，贝叶斯方法可以提供更直观的参数估计。贝叶斯分析的可信区间（credible
+interval）描述了各个参数值的合理性，即哪个参数值更可能是真值，且该区间的系数（例如95%）表示该区间包含真值的可能性。而这些通常被误认为是频率论置信区间（confidence
+interval）的属性 [@morey2016]。
+其次，与频率论不同，贝叶斯分析可以为虚无假设（null
+hypothesis）提供直接的证据。例如，贝叶斯因子（Bayes
+factor）可以直观地描述在备择假设和虚无假设的基础上观测到当前数据可能性（likelihood）的比值
+[@schmalz2021a]（详见顾昕，本期）。
+再次，当混合效应模型试图包含复杂的随机效应结构时，基于频率论的模型通常难以收敛，或是对效应之间的相关性给出错误的估计
+[@matuschek2017]。相比之下，基于贝叶斯的模型能够更好的处理这些复杂的随机效应结构
+[@sorensen2016]。
+此外，贝叶斯方法为混合效应模型中多重比较问题提供了一个更加自然的解决方案
+[@gelman2013]。
+最后，贝叶斯分析可以整合研究者的先验知识，从而提供更合理的参数估计。比如，研究者可以根据以往研究的效应量为当前混合效应模型设定先验分布。</p>
+<p>鉴于贝叶斯混合模型的诸多优势，本文致力于向读者提供一个易于理解和上手的教程。本文主要包括如下几个部分：
+我们首先介绍混合模型和贝叶斯统计的相关基本概念与原理。
+接下来，我们将借助模拟数据讨论如何使用统计编程语言 R的
+brms包来进行贝叶斯混合模型的数据分析，以及如何报告结果。
+最后，我们将总结模型拟合过程中的常见问题，并对其应用进行展望。</p>
+<h2 id="id_11-具体介绍">1.1 具体介绍</h2>
+<p>线性混合效应模型（linear mixed-effects models，LMM；又称 hierarchical
+models 或 multilevel models），简称混合模型
+[@baayen2008]，是一般线性回归模型的一种扩展模型，它通过随机效应参数捕捉观测数据之间的依赖性，比如每个被试间观测数据的依赖性。与忽略这些依赖关系的传统分析相比，混合模型可以提供更准确的效应估计，以及更高的统计检验力
+[@tuerlinckx2006]。
+在解释混合模型结果时，往往会提及两个特有的统计概念，即固定效应与随机效应（fixed
+and random
+effects）。其中，固定效应代表特定模型项（即主效应或交互作用）或参数在总体或群体层面对因变量的平均效应。固定效应通常是研究者感兴趣的实验操作变量，它的统计学意义的与方差分析或回归模型中对给定项的统计检验的结果基本相同，即固定效应可以用来检验因素水平之间的差异性假设。相比之下，随机效应解释的是数据中来自不同来源随机变量的变异，比如不同被试与不同实验刺激带来的变异，而这些效应往往是研究者不感兴趣以及想要控制的变异。
+需要注意的是，这些随机变量的来源必须是分组变量，即称名变量，如实验条件、实验刺激或被试，而连续变量不能作为随机效应。在真实实验中，随机效应的意义在于，当研究者希望了解某个实验因子是否对所有被试具有普遍影响时，即实验因子的效应不会受到被试差异影响，通过在模型中指定随机效应，研究者可以排除被试差异带来的特异性，从而获得一个更普遍的对固定效应更精确的估计。</p>
+<p>为了让读者更好的理解固定效应与随机效应的概念，以及混合效应模型与方差分析的关系，我们将从最基本的回归模型与方差分析的数学原理开始介绍，以便读者更好的理解为何混合效应模型可以解决传统分析方法无法解决的问题。</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAAARBAMAAAAmrfOyAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACLklEQVQ4EWVTPWgUURD+snuJe/vuB5IDf0JkQVGxMEkVBStbm6ssrNbCBK0UAltIyMPCGLDYMpIrLsbUroVwoMWCWBw2J1pcY7CPkKCgWIjOezO7t7cZuPn5vrnvzZt7h3OtBWDxFsZNbfbHAap6ndhg6svJpNp6dIw2wEP6PC0zPTSDEqY0flioNg3VLpFS3onh2wOLdIrJUGolsQbw9GoO9bw3yTOTVNp4NwZQ4YSoZF1eyOwF4CZnqxhwQv5JnpmkPlughPGA61lTpqXhpoztdLJzylr+qfqIyrROrOdH51rRX2EbNyShIHPVvoYWO3ws1FJEtmYKb+p+W0DkWst7ArnTGZdr/RHkUwhsjViTvQCu+f3UgqLlB3Bj54PB7s2Qq2pymZb7QIB9C445TfuatC9lKVr/bWelFbqpF1CbH69KsxtF/6KItjGxNmTopzCFoIFfK+A7yVyk1Qwdc/NL2CFejPf1OpDyNO2HZgRG+xrA+fYeL22DaNGTugLnO737AZpHwAZ/m7UmAgamZgF9wIx4fwFvup9x3paitQt1G88IukhHn4HXSCzLWq62gNqf68KhgwpW7T3/iNJc25udRB1Vkr1WF6/OppjnfnkTw61EANR1QYl+ElOt4K4FZa6YCi+tWMg4WbZojQA0enmPSWjPtGn5xyu+jCaoqncNY+1A2/CWK/ICwM2eKzOXTfD7A66sd7omDFPjrV0NJMnCMYAJc5+S2WuXsHL5Hw4Je/JFTooyAAAAAElFTkSuQmCC" title="Y_{i}=\beta_{0} + \beta_{\delta}X_{i} + \epsilon_{i}" alt="Y_{i}=\beta_{0} + \beta_{\delta}X_{i} + \epsilon_{i}" /></p>
+<p>{#eq:eq1}</p>
+<p>首先，一般线性回归模型的表达式如 @eq:eq1。其中，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQBAMAAADUulMJAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAZUlEQVQIHWNQFjFgYDAMY2AoZGBg6ADixAkMXBOANEsAwx4gxcArzXABRHNJ8G4A0Qzvm8AUw8UEBoYZQOY9CJfhM5SWZGDgKGBgYJNmYGh4zcB9T3YBA9MHiBxvA4Tm2wGhmZsAiHAR8jCLI9UAAAAASUVORK5CYII=" title="Y_{i}" alt="Y_{i}" /> 是因变量，代表观测变量，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAMBAMAAACzedEdAAAAJFBMVEX///8AAAC6uroiIiLc3NzMzMyqqqpmZmbu7u4QEBB2dnaYmJirAFEOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVQIHWNgYDJgYGBRYIAB1nQGhjbOAAYFR6DIciCeysDAZqDAwLVgAwPrsgYAWzoGGq6SN4YAAAAASUVORK5CYII=" title="i" alt="i" /> 为第 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAMBAMAAABcu7ojAAAAHlBMVEX///8AAAC6uroyMjLMzMzc3NyIiIju7u52dnZUVFTW6esyAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAHElEQVQIHWNgUHZgYAhzBBIMjMQSCgwMFRMtHACEIgTlgp5HmAAAAABJRU5ErkJggg==" title="1" alt="1" /> 到 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAMBAMAAACzedEdAAAAJFBMVEX///8AAAC6uroiIiLc3NzMzMyqqqpmZmbu7u4QEBB2dnaYmJirAFEOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVQIHWNgYDJgYGBRYIAB1nQGhjbOAAYFR6DIciCeysDAZqDAwLVgAwPrsgYAWzoGGq6SN4YAAAAASUVORK5CYII=" title="i" alt="i" /> 个观测点。<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAQBAMAAAAG6llRAAAAMFBMVEX///8AAADu7u52dnYQEBBUVFSqqqqIiIjc3NxERETMzMwiIiJmZma6urqYmJgyMjKNFAGRAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcklEQVQIHWNgYDIRVWATCWIAAXYJBqYJYBYDkzADM4TFwBDCYABjLkxXgDG5PWAsBh4JOPOaDJDJ9gBIcCWEwET7GBaCRICAyYCB/wMDw1Mgs5WBgU+KgY9bgWGlyAKG9dIFDP1gJWDCDsHc9ADOPtcAANaYEal63HCWAAAAAElFTkSuQmCC" title="X_{i}" alt="X_{i}" />
+是自变量，代表了感兴趣的操作变量，比如，任务难度或者学生成智力。参数
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" /> 是回归截距项，一般代表随机变量<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANBAMAAABr8kJMAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAATklEQVQIHWNQFjFgYDAMY2AoZGBg6ADixAkMXBOANEsAwx4gxcArzXABRHNJ8G4A0Qzvm8AUw8UECH0PQjF8htKSEJpNGkxz35NdAGQAAMZdDK3ygcSeAAAAAElFTkSuQmCC" title="Y" alt="Y" />的总体平均值；参数<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" />
+为回归斜率项，代表研究因子效应的大小。<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALBAMAAABbgmoVAAAAJ1BMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwiIiJ3yPmuAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAQklEQVQIHWNgYDJ2YACCMBDBwN7AwMA2gYGx2RLEW7gBRDIwAqkZQLkJDJw8CxgYLDMXbAWLM4AVMTCcmgDmVm4AAHpkCz+ar/V5AAAAAElFTkSuQmCC" title="\epsilon_{i}" alt="\epsilon_{i}" />
+为残差，代表模型不能解释的部分变异。
+需要注意的是，使用一般线性模型需要满足残差服从独立同分布的前提假设，即每一个观测值的残差是相互独立的，并且在总体上所有观测值的残差应该遵循正态分布。对于现实中收集的数据，比如包含重复测量的实验数据，单个被试内的数据具有相互依存性，因此独立性的前提假设难以满足。</p>
+<p>当任务难度为组间设计时，每个观测数据点为各被试的平均反应时，此时一般线性模型的前提假设更容易满足，因此可以通过一般线性模型来检验不同任务难度对于反应时的影响。然而，当任务难度为组内设计时，每个被试会在不同任务难度条件下产生两个不同的观测数据点，即存在重复测量，此时一般线性模型的前提假设难以满足，只能使用配对
+t 检验或者重复测量方差分析对数据进行检验。
+实际上，配对t检验或者重复测量方差分析只是额外的考虑了不同被试带来的变异，但并没有考虑每个被试内试次间相互影响变异，即对每个被试在不同任务难度下的反应时求平均值依然不能完全考虑各被试中不同试次的依赖程度。
+为了解决这个问题，混合效应模型将任务难度作为固定效应，将被试随机效应，并且考虑了各被试中不同试次的变异，即使用混合效应模型时不需要将观测数据在被试或者实验条件层面进行平均或汇总。</p>
+<p>当混合效应模型只考虑固定效应时，其表达式与一般线性模型类似，其表达式如下公式
+@eq:eq2：</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAATBAMAAAAnj19BAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACyklEQVQ4EZWUO2gUURSG/8xk15mdfUAM+AiRAUVFRFcLHyAYbG22EpQUo0XQLkJwCwkOKXwLA2kCrrAhbBdxRAwRJUxjEbBYwSIIhtRGcImgWIiec++du7Ozk8JT3Hv+7z8zZ+5jF/uHq8CJS9gulhtBn6WY82lXaA/f7rMzwE1i9zO4RI6PrbSpWXEITi3tZuqrAQr9HxuXFgG9SkdBzZxRlOJCOYe9UqvBGt5p0ZccBC7G0PJk1mVTaMemnO/2Sq1KI+lKbVHiw4xiHTfpsvlG6tO3a1LYXUpVxi/l2a//0VI30ax8QZsyUU2KX7yU8X0mBWDWOcRO+BMt7eommplD2pSJavI7hYGPHjDHtAY44712wYUZLDYkVE0EM95HBG/spMH2gdesKGQTc1JS5AhJa13YariVFIAFOpOa5RM9Xb/zqz5NiWCWS1khmKKRY4dHA23AX7EBA9NrDGUICz9iyfNYUogXViYmC7RGCrUSalLxDEaHMe+zAQzKSa3kpaskT9LaQ4/T+vCkSdu1cZ3G7pnQz+BYsVoYI1s3YQbjGxW3UekA98hayT8UJXK7BlxJrc+xlR+hO7RJr3jTpp08dTQQ1WpYgHOlVDXGhFQrYYbHB4BD9NBeWOUQmL22KkrUmfiSPnpGkC1nfbQJo0PfZdLrzZ+iVg9PHzTC9EqYOZ3BsDXcxIt9EY5T9XlPPqJu19pcyDQ8m7BQ8klVXKDcok6JYJWfzNcEUithZkXxKQB8yF8viwp1JpyLo+e/vdhCedngEzKwYp9sckkcPicdcbtoraHAzGx/QeQ8bPquszF7ROi3ScrXqGvBnMlFaCEXPXfO6TJKjCarRd5aHZKtRRqccccL7VddLQ2ioFvZawX4APBOJMNOCpVnsAxExTaKEQ2JcLxoC46XIP+RLmXWLhXplHssG+NBb9vMB7NhegNkVZBbVXvzDztBsQPuZeDQAAAAAElFTkSuQmCC" title="\begin{aligned}
+Y_{i,j,k} &amp;=\beta_{0}+\beta_{\delta} X_{i,k}+\epsilon_{i,j,k}
+\end{aligned}" alt="\begin{aligned} Y_{i,j,k} &amp;=\beta_{0}+\beta_{\delta} X_{i,k}+\epsilon_{i,j,k} \end{aligned}" /></p>
+<p>{#eq:eq2}</p>
+<p>其中，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAATBAMAAADojanHAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAzElEQVQYGWNQFjFgYDAMY0AGhUBOB7IAA0PiBAauCahCLAEMe1BFGHilGS6gCXFJ8G5AE2J434QuwnAxgYFhBkg0gIGBOwYsfQ9MQokyMP0ZWcgBzJFkYOAoALJ6FwA1PsgAkmzSDAwNr4HCO4Fu4TTTmcDAfU92AQPTB6AC5gkMDMzfwBqBBG8DkOBXYGDgWwoUBwO+HUwMDCwMTAz7OI0WQISYm1gPMCxlYD2wltsGIgIiJzCcARFIgDvhwCcG7gQkEQZOhpgJQAIEANIZJkpvfXtrAAAAAElFTkSuQmCC" title="Y_{i,j,k}" alt="Y_{i,j,k}" /> 为观测变量，比如反应时，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAMBAMAAACzedEdAAAAJFBMVEX///8AAAC6uroiIiLc3NzMzMyqqqpmZmbu7u4QEBB2dnaYmJirAFEOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVQIHWNgYDJgYGBRYIAB1nQGhjbOAAYFR6DIciCeysDAZqDAwLVgAwPrsgYAWzoGGq6SN4YAAAAASUVORK5CYII=" title="i" alt="i" /> 为被试编号，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAQBAMAAAA2ZkhwAAAAJFBMVEX///8AAADc3NwQEBDu7u6qqqq6urpmZmZUVFSYmJgiIiJ2dnYLWoUfAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAARUlEQVQIHWNgYGBQBmIGBlcwiUSkFgA5bAqtQJKTYSlIgkUERLIuABIM7CBZBq4AEOnoACKzQARDNxA7K5kASY7pCgwMABIRBvN7seXmAAAAAElFTkSuQmCC" title="j" alt="j" /> 为试次编号，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAAKlBMVEX///8AAADMzMxERETu7u66uroQEBB2dnZUVFQyMjKYmJiIiIiqqqoiIiLWXUqHAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAARklEQVQIHWNgMnRgAIIwEMFQASZngUkhEMkqwLSagYHdQEmNgYGzKMCHgYHRFCQeqG4AJIsZrjIxMMxiuMTDwHCF4fQBBgAWlQpFygHDYQAAAABJRU5ErkJggg==" title="k" alt="k" />
+为实验条件，比如任务难度，简单条件编码为-1，困难条件编码为1。<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" /> 与 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" /> 为固定效应，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" /> 反应了所有试次的平均反应时， <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" />
+反应了任务难度对于反应时的效应，即两个条件下所有被试反应时的差异。<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAOBAMAAAC88gOBAAAAMFBMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwiIiJERETMzMwQEBBgdEq8AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAoUlEQVQIHWNgYDJ2YEABYSg8Bgb2BgYGtglAQV4gXqvAwMDYbAlkQQGHAwPDwg0wHpDmB2JGoMAMIM1pByTWsMxjYJ/AwMmzgIFhVjJQIN1bjYHBMnPBViB7QRmQKHUAEkAANjYayDh3DcxnODUBaNAHhg1cB9L3gUUqN1xi4LvAcInPYLkCRAkDGwOTApBAgCVMrBsYliD4DAm8QPsSQAIAW2keij5Li6QAAAAASUVORK5CYII=" title="\epsilon_{i,j,k}" alt="\epsilon_{i,j,k}" /> 为模型残差。
+此时，由于模型没有加入随机效应，因此无法解释反应时的个体差异，以及固定效应在不同被试间的一致性。</p>
+<p>为了解释反应时的个体差异，可以在混合模型中加入随机截距，其表达式如下
+@eq:eq3：</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANsAAAAtBAMAAADVZgN3AAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAD+0lEQVRYCe1WO2gUURQ92XWzu7PZxEbRbgptRPwVfkBwRUTQRkshxSqIYpXKLUQcU/gvIjaxEKKYIoWwIpGAREetgs2KjShCBCu1UAvRSu99c99nZt7GXcEuD/a9+8459959byabg8LWfUBxVRNdRu3KQheGYE3O7z2LGwfa3YWWKa8EKpHdZ6I5jIQZyG4N+SzErIWXigbXAjPdBTFKzRyrz2HIBx100iotSaO0249anAM1UGhiRT7zYkJbstyo6wxZRZJBafuqnZU6mgqw29lKKLUsGax9mVF1bXcnepeROttK+XzmlpjU7Sz5MXSSHMnQ+2aGGP4ZohoRWKLPbEwTdrRonOOoMnj6cLAQUzRJL+IoQzR0OyKxUYFbQ4I9kl8wtSW7vporyCg3dZSsd4FdJVwW8Iys0o5JjDM2eGOLV1IcE5iXJLu+6EArnJjDiJ7dSUwL2uC12Gr9brX4iiN+sOsZmyk3eKHR4MlIBs694X0yGmoZoS92iaLKW5qeDF5VoJ4i4McL3COWvmdt8dSUIuR0TGJTDBSiYI1X8iC0tSV7YAKV4TZw7TaVunmcf0Tss+ugsPga6+gkn+kpbN84Qax5dkxWnjeAeeC3VzIQ2tqSfYxabaYa7V007WnSZEewBbNT6nSFr3RHP4RJTqfIpziEwhhwYQoeSTGytZPs+Q90ieqGv1OxT0dtL4qqc7de4iROAHVKHJ5ODidvpiKvoxEcOYjg2xefBG8m27q2yQY+RyE/5bC2eHOD26/KmxFcLmB4roAn1W1Tik1Op8hJOqMMj4SZpLaTDewMRxEcxmjQeRhLslrodwMIFjqluDheiu/X5BfmsSXr11XMk0fCcFLbyWawiqGYpswwR+VblJs0EkMaJCdJGFU7nf1oiP7RPLKJSaQ1tSb9GdAnNTRpwZwkobh2hpooLeS/vynEx84d3bAm6CLh2l0ok7ocLN/A8g38xxvQVtjfwsf6MH+2BzVW2MMBPtaHeZN9oLHCPhIu2xaFi3mTlgCtFfaJUqxYlBTmS1oKq3h9ss5IsdIuhWlhr6vfJ+vsFKvbWfOsZb2v7JOzauvEUqxu58nIVui6Zyuct+VabllCpB1jKYOuxb2sET27vC3XmZY1zjgxzyzQHl6Le1kjssIZW+6kpVg5HWNK0lBzfxNb4awtt8/OsFxU2inzPOZ4+D4aKiuct+VSwbK2ncJSHr6PdsoK5225VLCsbaewlEHvpx1r87ZcKij/pFgGkstUWD1yPLyIe1noJ8JnyyVVs8nWMc8pgy7iXhZlhfO2XFI161ZSWMqgu+xfYmOFOTAbnZQDHJGP03l/XWtNjy1fKosT/n3wC6Begl5L9CXWRf8Amlc5De9ctYIAAAAASUVORK5CYII=" title="\begin{aligned}
+Y_{i,j,k} &amp;=\beta_{0,i,k}+\beta_{\delta} X_{i,k} + \epsilon_{i,j,k} \
+\beta_{0,i,k} &amp;= \beta_{0} + \beta_{i,k}
+\end{aligned}" alt="\begin{aligned} Y_{i,j,k} &amp;=\beta_{0,i,k}+\beta_{\delta} X_{i,k} + \epsilon_{i,j,k} \\ \beta_{0,i,k} &amp;= \beta_{0} + \beta_{i,k} \end{aligned}" /></p>
+<p>{#eq:eq3}</p>
+<p>与 @eq:eq2 相比，显而易见的是随机截距就是指影响截距项 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAATBAMAAADojanHAAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA1ElEQVQYGV2PrwrCUBTGf2zDO//NVxBWbAoK1oE+wJA1i9VmsRjEYh9YDCI+gkERm0mwrVvWFEEQn8BzdcHtg8O9/O4533cuYLQCMnLJjTLIxw7TSIUUqmlkwj5NMEvnKIvy61kG3WDnBL7Qjiw0168N8bJpJo2XBA1X3BO00WeEevV5gHmSwdcixtlSi69MxOEN1nHsYbndHt8uNYDiUOYsKVYsoSxBlbsnDhrlaCoqrqJuHWKmGjlBZPvFtu0/Dfmcp5GWl5S+/2SEsoLUn3TMN4oPys4n9QS2PTgAAAAASUVORK5CYII=" title="\beta_{0,i,k}" alt="\beta_{0,i,k}" /> 的随机效应。其中，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" />
+不再是所有试次反应时的均值，而是所有被试平均反应时的均值。而 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAATBAMAAADojanHAAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA1ElEQVQYGV2PrwrCUBTGf2zDO//NVxBWbAoK1oE+wJA1i9VmsRjEYh9YDCI+gkERm0mwrVvWFEEQn8BzdcHtg8O9/O4533cuYLQCMnLJjTLIxw7TSIUUqmlkwj5NMEvnKIvy61kG3WDnBL7Qjiw0168N8bJpJo2XBA1X3BO00WeEevV5gHmSwdcixtlSi69MxOEN1nHsYbndHt8uNYDiUOYsKVYsoSxBlbsnDhrlaCoqrqJuHWKmGjlBZPvFtu0/Dfmcp5GWl5S+/2SEsoLUn3TMN4oPys4n9QS2PTgAAAAASUVORK5CYII=" title="\beta_{0,i,k}" alt="\beta_{0,i,k}" />
+代表了每个被试的平均反应时（并不一定等于每个被试的平均反应时），即等于被试平均反应时的均值
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" /> 加上个体偏移量 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATBAMAAACXXLs2AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAApUlEQVQYGWNgYGAyCWFAAGUGtgIEL4CBYwKcxz6BgUsBzmNmYNgK5zAw8xy7gMTjnNeA4D1nYNjC4Ay0qBUkZgDTdxLKywSrXAAiLzCwf2A+AFT5YfIDBr4NDBoPDD4xMLDsLHVgYFF2CWJgT2Bg4AapZwFiBl6gUfwvHBgYgE4BspTZGfRZtj9gqAPxuM05At4yAR3oAOIBgQOYhBJME5B5YMMYAHeNHdHZKthqAAAAAElFTkSuQmCC" title="\beta_{i,k}" alt="\beta_{i,k}" />。
+因此，加入随机截距的混合效应模型可以解释不同被试 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAMBAMAAACzedEdAAAAJFBMVEX///8AAAC6uroiIiLc3NzMzMyqqqpmZmbu7u4QEBB2dnaYmJirAFEOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVQIHWNgYDJgYGBRYIAB1nQGhjbOAAYFR6DIciCeysDAZqDAwLVgAwPrsgYAWzoGGq6SN4YAAAAASUVORK5CYII=" title="i" alt="i" /> 在反应时上的个体差异 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATBAMAAACXXLs2AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAApUlEQVQYGWNgYGAyCWFAAGUGtgIEL4CBYwKcxz6BgUsBzmNmYNgK5zAw8xy7gMTjnNeA4D1nYNjC4Ay0qBUkZgDTdxLKywSrXAAiLzCwf2A+AFT5YfIDBr4NDBoPDD4xMLDsLHVgYFF2CWJgT2Bg4AapZwFiBl6gUfwvHBgYgE4BspTZGfRZtj9gqAPxuM05At4yAR3oAOIBgQOYhBJME5B5YMMYAHeNHdHZKthqAAAAAElFTkSuQmCC" title="\beta_{i,k}" alt="\beta_{i,k}" />
+，这已经足以解释各数据点之间的相关性，比如有些被试的反应更慢，而有些反应更快。
+然而，该模型依然无法解释固定效应在不同被试间的一致性。很容易想象，任务难度对反应时的影响对不同被试是不同的，比如某些被试在两种任务难度上的反应都很快，这就导致任务难度的固定效应在这些被试上是小于另一部分被试的。</p>
+<p>为了解释固定效应在被试间的一致性，进一步在混合模型中加入随机斜率，其表达式如下
+@eq:eq4：</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOwAAAAtBAMAAABfSZo2AAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEiElEQVRYCe1YTYhbVRT+eJnJJO9NZqAOVC2VgL+UMkYXtoJgcOsmK0HJ4ulCVFyMUDoLKb10oZ06QqCbakdILbOrGJDKiFIfgoWiQoQiBbHOuhUcWqgr0XPuz7s/eS9MggsXcyDvnnO+757z7r0Tcr/Bw0st4KmXUGZbG70yCAjB5Pr+QX3p3fIJFnmH3NM2DLxE4E6QsuEoOL8PSccSxniv9hCXL2geGN2JRJcbBZODaPi9DNfPAjMdfBPmbPwY8KKNtFdLlVMAHsPQpxuunwUaB0KmyxCoZG4sfVOqALywMfDphutngfj+RsB0GWL1bzdUvilVAC68ENAN96dfAuDPU8A5znWApMtOZZVN7pZ4fROXNihXF8DljBwyU4rB6PvMBSv7CC/gLvZsE1Xm55SYxo4bR41xE5VepyZUNJeqUbeVYK2pclDgm/d5Yf6KR3SaB8W86WTQdgOaREu/uhLTPrDNyOeR1ZN/rZ4gl8Es0pgC494xyRnh7v9NaMBAd6nACuU+7NMmb79BT2tUefHtVtwG3qfkleoZCenVMphGf1AqB5/ABeGEBCluQnufN1FlHgDEbcp+NaRTeeZwzz1b+hIuN1pRG7WFAXD2tWtUyJTib+gy1h+h2IDJEIs7NnS41DZvIstUDwDRDi20wg3vybr54yKSV+blap+k3POpAvRqGUx2Zuh9DPg4vcKDNmS25h51mnCZ5ObBPhqCCItNYGGTejt2fm1jUF2pdoAblL31soJ0KQZrGR+4BjeX+vj8ocyEkqy5jbUP8iamDBa2Ij7pCFfqT/dVafWUL7FTE03cFs1k++whtxSDdXERPkjJAi5ldRNbBpVTsxk2MZt9ljwnC5uHYOfSJ+jiaLMbD7/IOEYykIPg540sAClXwKWsbmLL8PQefuSHb1Ffx3Ua+ePaODDk6nncxIOSNLuDJHXLkp9TvqSAP66NA0OumiebeFAd3Z7t4laXPm9DuBU5qQAs5somxVBebM/Z24G9Hfgf70Cydm3M24UX/zHUyaAt+ZNXMmf04l9CnDidYTYtneRe/AelrCmAKAVfEErMvfi/V8KZKk0XMf831qsiHFXw37adOzn0OnmBe/HXba/fGvNT5U0eF9Sqb3UCPFAFBlVt567+jvMmNf34KfAsDnepwDm6rvDoWNwkVSD1BiVV249RTYUrNxz6BK7gsyUZpOy4cdRIB1/Jak0KaAf+kbqIgjN9SkBpCvamMQHcw6NmZts4alQXf30I+Z/UaQkqaeLzdx8NEW1jOaOL9AptshQj9mzlxV/qDSqYt12z6mP3fXxm3MLlfu27thILSoxYBl/8pd7gVN7211x9WOaEXn3rox/wLf+ngBVJKEb44q/0hts2y9XHhM0sXV4711lgNsSoGOkRUekNcvLVtjy5QcjkRn809NWJW5EUC6EYEQSy3pD2tRoQC09u6Oxkg1Q1jXUSIiwWAjGiLv6kNzybb3pyw8N2G/A2SmMnD3ROnoD27UC/So5gsPlpvCSlrw99dmueptjtpFEeL6x4caNczoQbU8wqy/4L3XRCcP/Kl4cAAAAASUVORK5CYII=" title="\begin{aligned}
+Y_{i,j,k} &amp;=\beta_{0,i,k}+\beta_{\delta,i,k} X_{i,k} + \epsilon_{i,j,k} \
+\beta_{\delta,i,k} &amp;= \beta_{\delta} + \gamma_{i,k}
+\end{aligned}" alt="\begin{aligned} Y_{i,j,k} &amp;=\beta_{0,i,k}+\beta_{\delta,i,k} X_{i,k} + \epsilon_{i,j,k} \\ \beta_{\delta,i,k} &amp;= \beta_{\delta} + \gamma_{i,k} \end{aligned}" /></p>
+<p>{#eq:eq4}</p>
+<p>与 @eq:eq3 相比，随机斜率指影响斜率项 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAATBAMAAADojanHAAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA0ElEQVQYGV2PPQrCQBCFP5Lgxv8rCAGx00KxDegBggi2tnY2gpXa2AfsRTyBhSJ2VoKdR0injSCewBl/wOTBY4dvd+bNAla9S0IeqWECBbhhHJmQTCmObNjFCXbudEmi9HKWQFfYMpoLbclCelLTWc3fu/MXDRj/0EqLC+bBNAD7KI2PRURhQyWye3Jbe4JzGPk4XrtDmTWYPmQH0ueIabCCvAQVb75MUNQqbAxFz1B19hETRfkGbpBtusHdks/5ilT+11p/ZIWygvhPGvOO4gVlhSVYECLS8wAAAABJRU5ErkJggg==" title="\beta_{\delta,i,k}" alt="\beta_{\delta,i,k}" />
+的随机效应。其中，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" />
+指固定效应在所有被试上的平均值。而 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAATBAMAAADojanHAAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA0ElEQVQYGV2PPQrCQBCFP5Lgxv8rCAGx00KxDegBggi2tnY2gpXa2AfsRTyBhSJ2VoKdR0injSCewBl/wOTBY4dvd+bNAla9S0IeqWECBbhhHJmQTCmObNjFCXbudEmi9HKWQFfYMpoLbclCelLTWc3fu/MXDRj/0EqLC+bBNAD7KI2PRURhQyWye3Jbe4JzGPk4XrtDmTWYPmQH0ueIabCCvAQVb75MUNQqbAxFz1B19hETRfkGbpBtusHdks/5ilT+11p/ZIWygvhPGvOO4gVlhSVYECLS8wAAAABJRU5ErkJggg==" title="\beta_{\delta,i,k}" alt="\beta_{\delta,i,k}" />
+指每个被试独特的固定效应，即等于被固定效应在所有被试上的平均值 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" /> 加上个体偏移量 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAOBAMAAADH1sFNAAAAMFBMVEX///8AAAB2dnYQEBAiIiLMzMyqqqpUVFSIiIi6uroyMjLu7u6YmJjc3NxmZmZERER8QKP8AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAgklEQVQIHWNgUHZlYGOAAvZOLYZsGCeVgXPCAbYDDAz7GxgYLjAwHA1gAAL2CSCS4QyYZAaTDMcYjgMZWziPgrjaPCwbGBjy5raBOA0Mt4DkK4ieBww6QI7rN5AE6wEG7wMXuB3yrgI5HBcY3lz4waqwrwHEAWKEi0CcnSACBhJADACXhh2MfdBRqwAAAABJRU5ErkJggg==" title="\gamma_{i,k}" alt="\gamma_{i,k}" />，使用 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAOBAMAAADH1sFNAAAAMFBMVEX///8AAAB2dnYQEBAiIiLMzMyqqqpUVFSIiIi6uroyMjLu7u6YmJjc3NxmZmZERER8QKP8AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAgklEQVQIHWNgUHZlYGOAAvZOLYZsGCeVgXPCAbYDDAz7GxgYLjAwHA1gAAL2CSCS4QyYZAaTDMcYjgMZWziPgrjaPCwbGBjy5raBOA0Mt4DkK4ieBww6QI7rN5AE6wEG7wMXuB3yrgI5HBcY3lz4waqwrwHEAWKEi0CcnSACBhJADACXhh2MfdBRqwAAAABJRU5ErkJggg==" title="\gamma_{i,k}" alt="\gamma_{i,k}" />
+作为固定效应的个体偏移量是为了避免与因变量均值的个体偏移量 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATBAMAAACXXLs2AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAApUlEQVQYGWNgYGAyCWFAAGUGtgIEL4CBYwKcxz6BgUsBzmNmYNgK5zAw8xy7gMTjnNeA4D1nYNjC4Ay0qBUkZgDTdxLKywSrXAAiLzCwf2A+AFT5YfIDBr4NDBoPDD4xMLDsLHVgYFF2CWJgT2Bg4AapZwFiBl6gUfwvHBgYgE4BspTZGfRZtj9gqAPxuM05At4yAR3oAOIBgQOYhBJME5B5YMMYAHeNHdHZKthqAAAAAElFTkSuQmCC" title="\beta_{i,k}" alt="\beta_{i,k}" /> 混淆。
+此外，随机效应之间可能存在相关性，即随机截距 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATBAMAAACXXLs2AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAApUlEQVQYGWNgYGAyCWFAAGUGtgIEL4CBYwKcxz6BgUsBzmNmYNgK5zAw8xy7gMTjnNeA4D1nYNjC4Ay0qBUkZgDTdxLKywSrXAAiLzCwf2A+AFT5YfIDBr4NDBoPDD4xMLDsLHVgYFF2CWJgT2Bg4AapZwFiBl6gUfwvHBgYgE4BspTZGfRZtj9gqAPxuM05At4yAR3oAOIBgQOYhBJME5B5YMMYAHeNHdHZKthqAAAAAElFTkSuQmCC" title="\beta_{i,k}" alt="\beta_{i,k}" /> 与随机斜率 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAOBAMAAADH1sFNAAAAMFBMVEX///8AAAB2dnYQEBAiIiLMzMyqqqpUVFSIiIi6uroyMjLu7u6YmJjc3NxmZmZERER8QKP8AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAgklEQVQIHWNgUHZlYGOAAvZOLYZsGCeVgXPCAbYDDAz7GxgYLjAwHA1gAAL2CSCS4QyYZAaTDMcYjgMZWziPgrjaPCwbGBjy5raBOA0Mt4DkK4ieBww6QI7rN5AE6wEG7wMXuB3yrgI5HBcY3lz4waqwrwHEAWKEi0CcnSACBhJADACXhh2MfdBRqwAAAABJRU5ErkJggg==" title="\gamma_{i,k}" alt="\gamma_{i,k}" />
+服从均值为零的多元正态分布。因此，在建立混合模型前需要假设是否存在随机效应间的相关性，一般混合模型建立时会默认存在随机效应间的相关性。</p>
+<p>至此，我们讨论了如何在混合模型中加入不同的随机效应以及他们的相关性来解释被试之间的异质性以及观测数据中的依赖性。需要注意的是，研究者常关心的效应（主效应与交互效应）往往可以与模型的固定效应相对应，并且固定效应的解释不会因为加入随机效应而变化，此外，加入随机效应还能增加对于固定效应估计的准确性。</p>
+<p>在确定混合效应模型时，通常需要考虑包含最复杂的随机效应结构
+[@barr2013]，即及考虑所有潜在存在的随机截距与随机斜率。然而，此时的模型可能会遭遇不收敛或给出异常估计的问题
+[@bates2015]。
+相比之下，这种包含复杂随机效应结构的模型通常可以在贝叶斯框架中得到更好的拟合
+[@sorensen2016]
+[@eager2017]。除此之外，使用贝叶斯方法进行模型拟合还包含其他优势，比如对于参数估计、假设检验、以及结合先验经验的优势，这在前文都有讨论。因此，我们接下来讲介绍如何使用贝叶斯方法来拟合混合模型。</p>
+<p>基于贝叶斯框架的模型拟合的特点在于，不同于频率主义框架中将模型参数与实验效应视作固定真值，即当抽样次数接近无穷大时两个样本之间的差距等同于两个总体真实存在的差异，贝叶斯框架将模型参数与实验效应视作存在不确定性的概率事件，即两个总体间的差异不是固定值，而是存在不确信噪音的概率分布。
+用贝叶斯公式表示如下 @eq:eq5：</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALMAAAAsBAMAAADcCpRWAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADsUlEQVRIDa1WP2hTYRD/tXlt/v9RLKnFIVDEtWgRqYLPwS4KRrEOHWo6FAeXVMFBEKLgICIWB10cqoOCUo2Lgy4fougYJycxdS4YB3UT7+57L++9L+l7L7UHufvu7neXly+5yw8YRJJTLromh4TrevayHLs4LxFxymJ2dw1Y/AQFDM/bSXIMaUriihGNdg8Brwg1B249bynsNWsSDUkMV81ElN8BrldQqHBrq4USimYFBSRByIGEnyWtwNepkJtKlpCpGA3oY0jisRGPcnM2kCljlXAKy3WrhFSTawqstLyHTtx2A9F2+MDxc0gTrjCWqZNROIqRFrDCpRwHJqfnauxLQockHqUuLVdHq3lGfTvLWuHrs5dN0HUDCzmrCiT3jWEJLejEEIPiSeMWMs1TjH3UYK0wjjw1fEDnjZnzFEulVvDc6kAn0nVGxZPDyNZ+MHRN8Moq4xidvrB3eop1oonXhQ50Ij9A63dIV65xh9+soOgZn5BdodfGzJE2mVwF95It6MQAd40y7uivayd1odZWK8mXwa3prvmxh+qpFvk64WutRx81gogw1i+FMv6iWKcrLUtYoZVt0Hgo9nSf9XqxjT/QiZMc19KU0aeHWbwPjO5pmEsgsTRpI1FBcm2izRUKN2nqMVJlJ8UKB89MA/uhE7QLHHFGnyqyJSkwl0COe1j0AI4obXN1NwB84OMJx//YjRed0VdI0V1+p3inm5PDkM3GK1Dsep34vIuV816+h3BHXwEPIVvZWALrXIdZ0ayUPl3QhnWhxNqqscao92nc0Vc0EvUMJ4NLIPVzlYOpCmsWJXqkLUbU3QkxN0QviA6MvgLWq0857vv1CEwr2z235WC5rmd1yOZAcPQVkP8lcVkCF9+SvGHYViQ4+oq25ri0GWQJbPa+gdHn1i1BGktgx8BC32pg9Kl1sSat+9+1pGKrwOgrWgUVsEjr/7trBEZf0f+q/kn6loC81VZUYPQVrn5+IV28JRDSVIaL8324DkUDo68YJ+LNtBvpY7uUJ1nrkw2Mvju/gU3Ur8iJeZSHNkWPBEbfa+1bAj0lXqDTpTy033okMPpea70EetDBgI/y9HAdD+lsg7Ybsd1DmPVRHs11wsCxcyblkT/J2NWhQJPyCNcJrYidNCmPcJ3Y1eFAg/JorhNeEjdrUJ5tvGuT8mxja5PyWCrux43EmZRHc53IsjgAk/L4uU6c+hCMSXlc1hRSEjdlUh4f14nbYhOcSXn8XGeTkkHDtlPQh+vgH5+16AV//r2LAAAAAElFTkSuQmCC" title="p(\theta|Y) = \frac{p(Y|\theta)*p(\theta)  }{p(Y) }" alt="p(\theta|Y) = \frac{p(Y|\theta)*p(\theta) }{p(Y) }" /></p>
+<p>{#eq:eq5}</p>
+<p>公式右部 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABOUlEQVQoFU2Ou0oDURCGvyQn7uYeRDGIRUDENkgQO2OtxSKkSSFrYb8iWFhFwcrCYKGNjRYKCprKegvFdn0AIfEJ0oitM2fdxIH55/KdmTkQ20Ec/L+SRpJAH9KdFqHZvYSphe7hGGW60DEhIYUqZD3SXsIqYCKqgtxp+JL2KEFLUGw4irjGaUj7NkGvsB8Yi26CvHbPxBebbZ8erJONdGro3SvKgbM8yx4RfD489xWVvluKUuC6PR6NHK1R8hTla0rIBZDp81IeYebYwCLZIFYSVKxz4UTI8J1FFd8iuUUqcCP5homcK4tS9TEaBpUBPxAVuhYdyyaxLfHV7SaswOmaFCFHH09KaIu/abKpIhZaVXkXn9GkGG+ZINOHclWR8VX/TU3J2/N52zuxOpnaiWtVE6eDOEALfgExVkSUplE0qgAAAABJRU5ErkJggg==" title="p(\theta|Y)" alt="p(\theta|Y)" />
+为后验概率分布，代表在得到实验数据 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANBAMAAABr8kJMAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAATklEQVQIHWNQFjFgYDAMY2AoZGBg6ADixAkMXBOANEsAwx4gxcArzXABRHNJ8G4A0Qzvm8AUw8UECH0PQjF8htKSEJpNGkxz35NdAGQAAMZdDK3ygcSeAAAAAElFTkSuQmCC" title="Y" alt="Y" /> 的条件下，实验效应为 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" /> 的概率。
+后验分布可以通过公式左边部分计算，其中<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAATBAMAAAADuhLEAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA4klEQVQYGTWOvU4CQRzEf3J72QvycYVGQkViDC0hxNAJtQ0hsaG6xtCe8QWIibUXG97AQguorCm0347KBN+AztbZhZtiZnb+k8nCAY9BouNLsobKbGSzMokWMDMbrsqgCcaRIj1Al1rPplQ7x+ALHnKTkmjrcnCXUcANsUPGds+5R/bnfaWzSknBh9lDi/oElhCt+WzsMReMNbjVeodX61DxTUEBJ3nipMZZ1X3wmzd3/IE7Xeh3G7ieDqAPz0MVYu1+S7n1JNRyOCuNVx0aqTcm8wxzeGkH9xQ43gXxZIIT/wPBxSqUg4VB/gAAAABJRU5ErkJggg==" title="p(\theta)" alt="p(\theta)" />为先验概率，代表了在未获得实验数据时对实验效应的假设，即可以通过以前的研究实验效应设定该实验的先验效应；<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPElEQVQoFUWQv0sDQRCFvzOX3BkvPxBFEYuABFuRYJ3UJhCUlEos7E8EQavTTiwMFlYWKoKgIKnEXsU2FjZWxr8gjVjY+HYvpwP79s18OzPHQRzbw5tMbBaSHLruxilkZqNAtfIVO38oFTFWhHQTofR5nZFmwgrgj8MnBjVwYJCgsswZnjYIPbIFlwl6krkIs9IAb4oaHMnPVVptOjL95rVFqQFrMAre/CSb9FTMfVUtyr3f/GDW+X6HW9cszU5LNNCJeFNXCKku93mLTKtQLXSLmiEUlDjxTLXQjtEhWTntwgn9nv0Mp6RMXQ121WFQPyx88C2zr4JBOR5013WWViqwCHuvdzHyVyOZls6zKSwbsaG/YeNFOmFcYIdZZwTcLuSL1rWNmhh2ZfT2eMZWDqz+o/Uk14DE5mNThV90iDdWFYnmCwAAAABJRU5ErkJggg==" title="p(Y|\theta)" alt="p(Y|\theta)" />为似然，代表了在实验效应已知的条件下实验数据出现的概率，可以理解为在混合效应模型已知的条件下，通过该模型预测或生成不同模拟数据的概率；<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAATBAMAAADlk9mAAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA9UlEQVQYGT2NsUoDQRRFz5o1u4kxG0QhhBQBEVuRYJ1ei0VIK2thvxCwsErSpjBYWNloYyHIVn6BYpv8gfELbMTW+2YdH7w795558wbKGv2dHHgDRXh+C9Xu+PKfVcZstGA9ZS31MIF4Cz6Vvzzbk7kjsmUPnr3K3Od1izP1bn+YMZdZpY/GahDt73DBQmHze2As0Op4zlNoi+ttQ9RyqBS8NB2zYY2LNXrcRBaTzJDtI8jjhfsj6CmVbJUnH/woTPRIdaI+Ou3DIVwtnx0bSt/MHbvo5F26ba5RvpMLC2i2jIWZqVVVt9cdZ6dOJWfeaNDbAfwCtM4pG7A7ywAAAAAASUVORK5CYII=" title="p(Y)" alt="p(Y)" />为边际似然，代表了数据随机抽出的概率，不同于似然是在两个已知差异的总体中进行采样，边际似然则是在所有总体的组合中进行样本的采样，因此可以表示为在所有不同实验效应<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" />下似然的和，即<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAAAnBAMAAACS1OtVAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAENUlEQVRYCe1WTYgcRRT+dqZnev5nWnadbAjYGoIHIQxJENFAeg8JgoLtxlWIksweEq+9UQKJBCdKxCjiKvgHHmaXqKhEZxH04KUTDAZPk5MncTYHIbBgRFTIQf1edVV3z0gShN0BwXd473vf+6pedVd10cDNrei8p8xxnE03V65PNeeE0UR7V7asz4y3mOX8lBbY894tpP+m/IwRtwzQ8bjjaZRpawA7FkVU1hTimChiiiCl61nzbwP5LZ1jaQFxwekb5iMDytg33QbmLyEEMgc8m8mwlVW61hxmE122g3IDyPnI+MMaLN0+QgD3ASsk5yD9Dlghto1KqLADFBY1T6ws1tX5ILcBV8he0xoT6o5roImUnHJRIx/C6qMBDh82KiotlHqaJVYW66Tx+9G+LGuNCfYbkwbqKK+gGEK2POS0dgMld1giiokB6gzKiJXFum+YLgUlIV9VlZS7845UIrDiAaUmuoQhFgKrgUKPGDVxykRxlS0ZlBErE93WXXNtLDJd9dWBKOpaHPJON8aZnXsfhyhqU6WAIcQe5PpQ4xUPo3jlrw9w5sqTPE+zLcHYud0TnX33FA6DQ1D9jQQXJS7/tVhXIHA5uVmOLvh5vyrkj4+JD/HDJ5/3wC0EDlYsH4gVF4GPBxUfX+BlEFf88jXRFXiIPrUIUYqmLQYyUdpmpmOqc4aH4BEpLnXEh9iEqg+8Q7x2/yFysYK7/iuqLp/+LIifQrmrdNkevqypfn0O4mPGk6uULuf0DMQDKLd/luycokKriRmi7yV7tCVeK+RbmMREUL2wvyP4LRQ7Sldx8abdp7DepuPJU37IrbhxegFF96Rkvysq5FQfEnFCPt/uAYNW8Ftg7RAWPL65HqxJrLJI3URQ6Cv9hEtC9xvaP1xXBeWaeC1aEb9WWmj1bXmX0o/712LQirp/lG0uZhZIEdca2F1QutWgPsAfZE8FdMDDyqdduRdntSb+RJ3CQlNxIfrlDsArhqbejFFUBy1+fs0HqwNsJ8aifT2ndPfO7gJ2ACcufyaD5JYasT1Jnj281UPWhX1u80DYEKd5dck9SOP6eSdrRWaHx5Ow7FrL2wJivHTXT08oHc8q8JC4yL41wMSMOgxRVpGJrZ4psZ+yShAzo4q4IEB0PKsRkDg0WUTgqqcBQ3RjJEsKo1JquaOKZCwRdbWGMFZbvFg+WWpEWO9GUXk5Y8A+5cWFEXo6CuJHFUmFiLrXNyvmBcMfNMDEqm9QF4VfupIUXPFiofK5gQri/qGIKwQpnWV4zwATvzMg1zYInkEDBeLBhkaiSCi+xXRyA5wPdcGe72i0oUF/DM+ePj+9oX305AX+eGqLNnqDm2aPxJY6hBvc9P/p/+Nv4MTZ8T7AV8+NtV+u+/xY+1W9tbH2m5k7MtZ+9+DSWPvtV//f42v5YqkzvmbsVJpdt3Z/A02Z7LHzxQSDAAAAAElFTkSuQmCC" title="p(Y) = \sum_{\theta} p(Y|\theta)*p(theta)" alt="p(Y) = \sum_{\theta} p(Y|\theta)*p(theta)" />，当<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" />为连续变量时，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOgAAAArCAMAAABFCzRQAAAAWlBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLQ0NBgYGCAgICgoKDg4OAgICDw8PBwcHDAwMBQUFBAQECwsLCQkJAwMDBYGL8EAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEvUlEQVRoBeWYiXKrOgxAbcAYzNY0aZr0pf//m0+LVzCh02HmcnM9E2IL+UjyIgxC7FfeTu/n/WjHJV0+rp/tcd3bz7PTpzh/7oc7LOkqb4f1bVfHznJX3HFh96/j+rarZ+37rrjDwt7kf4f1bVfHHvKyK++wsPs/8QiF4f/4R3LRRf5dZwVdzvfGQjBX4PZZrhxzl0RRx4if8DOMGJHUf8KDDp0QVS1bdqWWfSN04lbCjBufa+eiJVH03LFQphI/4gPDlbGX2tWz/7G/oAwWBBtKtMsGm5094yiFrYKuWHtWvlfORTkiB6qMqLC2zWeG0BRhs0h6LPfOxTxSdoa8BlQmajSywP+Rrk5Id9Yv8iN/L0ekQKsBOtDosEq+O0mtQk+r0kTTy31YHvpHvBLXkzcUVNxgtOiK3xjGBhz0lrWbzCfdLJECRfc0BbrFdww5ot1pscBYHnyKeD0oB0NBpccVDcXgPjBcF6JZjKG7E/4fMn8AzBJpGNFERYHGfIolYKlmGSOvWdp1sYaVB1HEA2UdDBVlWSmFOcct/1EqYcKed+LAWtROyQFwg4iBlrjAFK6qYDapzhiNmSYD89O0Y6F45AtVlMLJgVgWI08U+wvtAmrBkC40xCVq+LFdsDdMyk4uOhLyTN354iccNcR3fADcImKgw2CMmdhjx1cjJOQK/ICyZOAyhHXWwqRTtYO130DyZDn9dbw9iYfiDvjBUAOjhIROVH4bG0npF8lQ2jC5LFheZTzrW0QMlAwMHJTjj31p1MSWlwxesxNmpAGyBq0GfD6xXCG049FHHrdBOTaEuUl0tRhDoH5u4Y4YNgOd56LnRPCpCjsn5iuJcXCZMexjhcLCzkNfKHzuWHmLY9byIKG/3B5TQz2m1bYQ2oc3JaeEeLasF7O/eS56ToRAeRFZK46PM1r2Lh/NGPxYoX4KJkTzRNJKBGcqbI52DwDPtxNDOEANBuksCn6Qumi8WKzt0TQXwXp5SsQZBXPaLVnH5z3q5nTGgMeKLnCD0a6EvGK9YznFWPaCphR4vh0bGhE54UBOUMHSoMQXOr/4VrbyFeciNPOUiNsJAu14ofH5yGJdzEvGMAoYAnqKSl01AtpwqhrxH4cGOurJCFzA5K9vR4bKGvI0JdmSjgbaDNK4BQQd+SQIlfWS5CJI6c+JGGhDG4yIMd/GDvI5oygL8JHShSnAzwquCsaT5aKpi2KsUcD++nZkyOZnUKk43ZP5cOnj6Q3iqHaR96jlMz7IskQMNCp5/pZXEWBWzfNAyW1rqOZ0sr6m7NvsXLRBTANd4W8wUgfi1gov5CpUrpJsy93rzQkV7+k7mst+a8Q00Dx/i8G+5a55HmyWSUaHnIZ2adwfUuFmubsUSJpbRPc+ytg8f5Ox6lOet1SnpBSLF4L4pq1/519d+O4SkAzd8nbGwI+U1sxleL8V/WXfi34bprglry6/xhy/40Nej+/kHh6evpmiDb5NvHD5sJ90O62zJ45XCf0i3ygU+Nqm/YveqwTn47hcxdl+ABwqMaZnAa/1ApX2Lr74G30l4cNT5mT1AkFiCF+324lDKWB/wpf9Vy3Xx8OGpuC1EN/eX740pTCvO6Hx9Bm1eCOIb//h+v/VDSI5hjN1sgAAAABJRU5ErkJggg==" title="p(Y) = \int_{\theta} p(Y|\theta)*p(theta)d \theta" alt="p(Y) = \int_{\theta} p(Y|\theta)*p(theta)d \theta" />，更多详情请参考
+[@kruschke2018a]。
+贝叶斯公式的意义在于说明，参数（实验效应），数据和模型的关系，即如何在结合先验知识和数据的情况下推测模型的参数值。然而，将精力过多的投入到贝叶斯方法本身并不会增强我们对建立模型的理解，真正重要的关键在于如何结合贝叶斯方法去拟合线性模型。
+为了便于理解，首先，我们假设实验数据来自于一个正态分布，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGcAAAATBAMAAAB/3A4dAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAB20lEQVQoFXVSPUhbURg95sWXXGMSFGttRXitiIND4+DkkqFdOgUKgnVJaWnXFNqh26NQKQ7ljQotOHRUfMFFpC2vi7OKIC7i4NYhgQ6lW8+5Ly9pnuSD797znXO/7373BxhsziNqhSi1QPHsRAVYXEkpJiDxZpVDLqVgX8Rr+se0km1zj2OxR2nJ+GSeBRhR3T5rTgOjnihmp0xMtoZvKRp4PgU4Ym3dfvmCYXEato8+ZaNFQcyw18creEUfmSqGN4TKTw8vxWbpuTqeCgOfxsaqlkLrfczAXHNLYytU7kXx/iVqQ16BR6TllucihoIndWBTYO/+205TGb98hYq4B/QXMFfC+AC3zc1V9tISHJbh1DCsKO/lJwuR0B79HI4tgMcwNaCkpN8SZVSWFt4J8eJum7rQD/pflALhTBXOcXxM3GHlhkifb/MwEvrOpncF7KnH0TwMidmbWtPduDyk/0sLuhaeAs0nNiyHcO/iLI95Lq9Cfczxs1zObCPT7iYQmFsN7jljqdEAxT9b++v46gM7n7dJJn+uSKZnbotV1Swt00A5sCgeCddsyAs56ICb0xqGPMsmSSwTm5O8byf+b5rlM8lMwjlhggbPbvDFit2kjcFre4rXgxYx/gevzFdtJV+O6QAAAABJRU5ErkJggg==" title="Y_{i} \sim \mathcal{N}\left(\mu, \sigma\right)" alt="Y_{i} \sim \mathcal{N}\left(\mu, \sigma\right)" />，其中 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQBAMAAADUulMJAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAZUlEQVQIHWNQFjFgYDAMY2AoZGBg6ADixAkMXBOANEsAwx4gxcArzXABRHNJ8G4A0Qzvm8AUw8UEBoYZQOY9CJfhM5SWZGDgKGBgYJNmYGh4zcB9T3YBA9MHiBxvA4Tm2wGhmZsAiHAR8jCLI9UAAAAASUVORK5CYII=" title="Y_{i}" alt="Y_{i}" /> 为 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAMBAMAAACzedEdAAAAJFBMVEX///8AAAC6uroiIiLc3NzMzMyqqqpmZmbu7u4QEBB2dnaYmJirAFEOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAL0lEQVQIHWNgYDJgYGBRYIAB1nQGhjbOAAYFR6DIciCeysDAZqDAwLVgAwPrsgYAWzoGGq6SN4YAAAAASUVORK5CYII=" title="i" alt="i" /> 个观测数据点，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAPBAMAAAD0aukfAAAAMFBMVEX///8AAABmZmYQEBBERESqqqpUVFQyMjLu7u52dnaIiIjc3Ny6urqYmJjMzMwiIiJ+IhJ2AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAdUlEQVQIHWNggAJlBxAjFIjZTAJATHMg7gQxGDgEGxgYVoOZPIoXGBgUwEze9wUMDBPATCYuaQaeAxAmtxQDJ5jFsJehnoEJwrzNcPFAF4SpwMCYEANmckxg4JQDG8DBuYGBQ0QBJBroBiQWgkXPVwCZvCBBAC2zEfy7QWIpAAAAAElFTkSuQmCC" title="\mathcal{N}" alt="\mathcal{N}" /> 为正态分布，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMBAMAAABGh1qtAAAALVBMVEX///8AAABUVFS6urpERETMzMzc3Nzu7u4QEBCqqqoiIiJ2dnZmZmYyMjKYmJhx8it5AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAASUlEQVQIHWNgYDJgcGVgYGBMYBcHUhYMnAuA1CYGngNA6iYD1wQgJcZQWFrAwCzKsIOPgYH70syaxwwMvCAJkDYwZQEmGWaDKQD/4Qu5JjaJEAAAAABJRU5ErkJggg==" title="\mu" alt="\mu" /> 为数据分布的均值，<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAIBAMAAADdFhi7AAAAMFBMVEX///8AAACYmJgiIiIQEBBUVFRmZmbu7u7c3NxERESIiIi6uroyMjLMzMyqqqp2dnbtYZBqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVQIHWNgYDIUFGFgYAirmAUkmSYw7AFSLBcYXgKpFgaGfCAFFHEHCTKwPgBSvOvWAkkA+DwJE6bQPDAAAAAASUVORK5CYII=" title="\sigma" alt="\sigma" /> 为变异。在贝叶斯框架下，该数据分布等同于
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPElEQVQoFUWQv0sDQRCFvzOX3BkvPxBFEYuABFuRYJ3UJhCUlEos7E8EQavTTiwMFlYWKoKgIKnEXsU2FjZWxr8gjVjY+HYvpwP79s18OzPHQRzbw5tMbBaSHLruxilkZqNAtfIVO38oFTFWhHQTofR5nZFmwgrgj8MnBjVwYJCgsswZnjYIPbIFlwl6krkIs9IAb4oaHMnPVVptOjL95rVFqQFrMAre/CSb9FTMfVUtyr3f/GDW+X6HW9cszU5LNNCJeFNXCKku93mLTKtQLXSLmiEUlDjxTLXQjtEhWTntwgn9nv0Mp6RMXQ121WFQPyx88C2zr4JBOR5013WWViqwCHuvdzHyVyOZls6zKSwbsaG/YeNFOmFcYIdZZwTcLuSL1rWNmhh2ZfT2eMZWDqz+o/Uk14DE5mNThV90iDdWFYnmCwAAAABJRU5ErkJggg==" title="p(Y|\theta)" alt="p(Y|\theta)" /> 似然（参数 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" /> 包含均值 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMBAMAAABGh1qtAAAALVBMVEX///8AAABUVFS6urpERETMzMzc3Nzu7u4QEBCqqqoiIiJ2dnZmZmYyMjKYmJhx8it5AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAASUlEQVQIHWNgYDJgcGVgYGBMYBcHUhYMnAuA1CYGngNA6iYD1wQgJcZQWFrAwCzKsIOPgYH70syaxwwMvCAJkDYwZQEmGWaDKQD/4Qu5JjaJEAAAAABJRU5ErkJggg==" title="\mu" alt="\mu" /> 和变异 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAIBAMAAADdFhi7AAAAMFBMVEX///8AAACYmJgiIiIQEBBUVFRmZmbu7u7c3NxERESIiIi6uroyMjLMzMyqqqp2dnbtYZBqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVQIHWNgYDIUFGFgYAirmAUkmSYw7AFSLBcYXgKpFgaGfCAFFHEHCTKwPgBSvOvWAkkA+DwJE6bQPDAAAAAASUVORK5CYII=" title="\sigma" alt="\sigma" />），因此，只需额外得到先验与边际似然就可以推测出后验分布。其中，实验数据
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQBAMAAADUulMJAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAZUlEQVQIHWNQFjFgYDAMY2AoZGBg6ADixAkMXBOANEsAwx4gxcArzXABRHNJ8G4A0Qzvm8AUw8UEBoYZQOY9CJfhM5SWZGDgKGBgYJNmYGh4zcB9T3YBA9MHiBxvA4Tm2wGhmZsAiHAR8jCLI9UAAAAASUVORK5CYII=" title="Y_{i}" alt="Y_{i}" /> 已知，模型参数 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" />
+未知，贝叶斯推断的目的就在于推测模型参数值，即实验效应大小。当假设先验参数值
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAATBAMAAAADuhLEAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA4klEQVQYGTWOvU4CQRzEf3J72QvycYVGQkViDC0hxNAJtQ0hsaG6xtCe8QWIibUXG97AQguorCm0347KBN+AztbZhZtiZnb+k8nCAY9BouNLsobKbGSzMokWMDMbrsqgCcaRIj1Al1rPplQ7x+ALHnKTkmjrcnCXUcANsUPGds+5R/bnfaWzSknBh9lDi/oElhCt+WzsMReMNbjVeodX61DxTUEBJ3nipMZZ1X3wmzd3/IE7Xeh3G7ieDqAPz0MVYu1+S7n1JNRyOCuNVx0aqTcm8wxzeGkH9xQ43gXxZIIT/wPBxSqUg4VB/gAAAABJRU5ErkJggg==" title="p(\theta)" alt="p(\theta)" />
+已知时（可以根据以往研究结果进行设定），此时似然也是已知的 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPElEQVQoFUWQv0sDQRCFvzOX3BkvPxBFEYuABFuRYJ3UJhCUlEos7E8EQavTTiwMFlYWKoKgIKnEXsU2FjZWxr8gjVjY+HYvpwP79s18OzPHQRzbw5tMbBaSHLruxilkZqNAtfIVO38oFTFWhHQTofR5nZFmwgrgj8MnBjVwYJCgsswZnjYIPbIFlwl6krkIs9IAb4oaHMnPVVptOjL95rVFqQFrMAre/CSb9FTMfVUtyr3f/GDW+X6HW9cszU5LNNCJeFNXCKku93mLTKtQLXSLmiEUlDjxTLXQjtEhWTntwgn9nv0Mp6RMXQ121WFQPyx88C2zr4JBOR5013WWViqwCHuvdzHyVyOZls6zKSwbsaG/YeNFOmFcYIdZZwTcLuSL1rWNmhh2ZfT2eMZWDqz+o/Uk14DE5mNThV90iDdWFYnmCwAAAABJRU5ErkJggg==" title="p(Y|\theta)" alt="p(Y|\theta)" />。由于边际似然 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAATBAMAAADlk9mAAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA9UlEQVQYGT2NsUoDQRRFz5o1u4kxG0QhhBQBEVuRYJ1ei0VIK2thvxCwsErSpjBYWNloYyHIVn6BYpv8gfELbMTW+2YdH7w795558wbKGv2dHHgDRXh+C9Xu+PKfVcZstGA9ZS31MIF4Cz6Vvzzbk7kjsmUPnr3K3Od1izP1bn+YMZdZpY/GahDt73DBQmHze2As0Op4zlNoi+ttQ9RyqBS8NB2zYY2LNXrcRBaTzJDtI8jjhfsj6CmVbJUnH/woTPRIdaI+Ou3DIVwtnx0bSt/MHbvo5F26ba5RvpMLC2i2jIWZqVVVt9cdZ6dOJWfeaNDbAfwCtM4pG7A7ywAAAAAASUVORK5CYII=" title="p(Y)" alt="p(Y)" />
+只是一个标量，且只会对后验分布进行缩放，因此忽略边际似然的计算，可以根据贝叶斯公式推断得到参数后验分布
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABOUlEQVQoFU2Ou0oDURCGvyQn7uYeRDGIRUDENkgQO2OtxSKkSSFrYb8iWFhFwcrCYKGNjRYKCprKegvFdn0AIfEJ0oitM2fdxIH55/KdmTkQ20Ec/L+SRpJAH9KdFqHZvYSphe7hGGW60DEhIYUqZD3SXsIqYCKqgtxp+JL2KEFLUGw4irjGaUj7NkGvsB8Yi26CvHbPxBebbZ8erJONdGro3SvKgbM8yx4RfD489xWVvluKUuC6PR6NHK1R8hTla0rIBZDp81IeYebYwCLZIFYSVKxz4UTI8J1FFd8iuUUqcCP5homcK4tS9TEaBpUBPxAVuhYdyyaxLfHV7SaswOmaFCFHH09KaIu/abKpIhZaVXkXn9GkGG+ZINOHclWR8VX/TU3J2/N52zuxOpnaiWtVE6eDOEALfgExVkSUplE0qgAAAABJRU5ErkJggg==" title="p(\theta|Y)" alt="p(\theta|Y)" />。需要注意的，参数后验分布 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAATBAMAAADPIygvAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABOUlEQVQoFU2Ou0oDURCGvyQn7uYeRDGIRUDENkgQO2OtxSKkSSFrYb8iWFhFwcrCYKGNjRYKCprKegvFdn0AIfEJ0oitM2fdxIH55/KdmTkQ20Ec/L+SRpJAH9KdFqHZvYSphe7hGGW60DEhIYUqZD3SXsIqYCKqgtxp+JL2KEFLUGw4irjGaUj7NkGvsB8Yi26CvHbPxBebbZ8erJONdGro3SvKgbM8yx4RfD489xWVvluKUuC6PR6NHK1R8hTla0rIBZDp81IeYebYwCLZIFYSVKxz4UTI8J1FFd8iuUUqcCP5homcK4tS9TEaBpUBPxAVuhYdyyaxLfHV7SaswOmaFCFHH09KaIu/abKpIhZaVXkXn9GkGG+ZINOHclWR8VX/TU3J2/N52zuxOpnaiWtVE6eDOEALfgExVkSUplE0qgAAAABJRU5ErkJggg==" title="p(\theta|Y)" alt="p(\theta|Y)" />不同于先验参数分布 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAATBAMAAAADuhLEAAAAMFBMVEX///8AAACqqqqIiIjc3NyYmJhmZmbu7u66uroQEBB2dnZUVFREREQiIiLMzMwyMjLyQAHrAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA4klEQVQYGTWOvU4CQRzEf3J72QvycYVGQkViDC0hxNAJtQ0hsaG6xtCe8QWIibUXG97AQguorCm0347KBN+AztbZhZtiZnb+k8nCAY9BouNLsobKbGSzMokWMDMbrsqgCcaRIj1Al1rPplQ7x+ALHnKTkmjrcnCXUcANsUPGds+5R/bnfaWzSknBh9lDi/oElhCt+WzsMReMNbjVeodX61DxTUEBJ3nipMZZ1X3wmzd3/IE7Xeh3G7ieDqAPz0MVYu1+S7n1JNRyOCuNVx0aqTcm8wxzeGkH9xQ43gXxZIIT/wPBxSqUg4VB/gAAAABJRU5ErkJggg==" title="p(\theta)" alt="p(\theta)" />，后者在前者的基础上额外考虑了数据似然的作用。换句话说，不同于频率学派框架直接通过数据得到模型参数，贝叶斯框架通过实验数据更新先验参数的值得到模型的后验参数。此时，贝叶斯框架可以看作是频率学派的一种拓展与延申。
+通过贝叶斯模型拟合线性回归模型的方式与上述过程类似。 首先，将回归模型
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAAARBAMAAAAmrfOyAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACLklEQVQ4EWVTPWgUURD+snuJe/vuB5IDf0JkQVGxMEkVBStbm6ssrNbCBK0UAltIyMPCGLDYMpIrLsbUroVwoMWCWBw2J1pcY7CPkKCgWIjOezO7t7cZuPn5vrnvzZt7h3OtBWDxFsZNbfbHAap6ndhg6svJpNp6dIw2wEP6PC0zPTSDEqY0flioNg3VLpFS3onh2wOLdIrJUGolsQbw9GoO9bw3yTOTVNp4NwZQ4YSoZF1eyOwF4CZnqxhwQv5JnpmkPlughPGA61lTpqXhpoztdLJzylr+qfqIyrROrOdH51rRX2EbNyShIHPVvoYWO3ws1FJEtmYKb+p+W0DkWst7ArnTGZdr/RHkUwhsjViTvQCu+f3UgqLlB3Bj54PB7s2Qq2pymZb7QIB9C445TfuatC9lKVr/bWelFbqpF1CbH69KsxtF/6KItjGxNmTopzCFoIFfK+A7yVyk1Qwdc/NL2CFejPf1OpDyNO2HZgRG+xrA+fYeL22DaNGTugLnO737AZpHwAZ/m7UmAgamZgF9wIx4fwFvup9x3paitQt1G88IukhHn4HXSCzLWq62gNqf68KhgwpW7T3/iNJc25udRB1Vkr1WF6/OppjnfnkTw61EANR1QYl+ElOt4K4FZa6YCi+tWMg4WbZojQA0enmPSWjPtGn5xyu+jCaoqncNY+1A2/CWK/ICwM2eKzOXTfD7A66sd7omDFPjrV0NJMnCMYAJc5+S2WuXsHL5Hw4Je/JFTooyAAAAAElFTkSuQmCC" title="Y_{i}=\beta_{0} + \beta_{\delta}X_{i} + \epsilon_{i}" alt="Y_{i}=\beta_{0} + \beta_{\delta}X_{i} + \epsilon_{i}" /> 转写为
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAAATBAMAAAADltCBAAAAMFBMVEX///8AAADc3NxmZmYQEBBERES6urpUVFSYmJiqqqrMzMzu7u6IiIh2dnYiIiIyMjJg6KykAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAC2klEQVQ4EXVTO2gUYRD+snuX3O7eA2I00RBZjS8U9CxERStREGwOBEHTnEgStIoQCSIhi40mWGwZMcXFmFKyQYQrVFZEIdicjyIWhhR2ERIUFAvBb/5/N7c5cwP/zDffzM7M/1iguZjnGHPC5gmbRSS9t6MIHL3UELZ8EsOXqdq4nPGFhjhQnZIUOJ87A6vjTj38TOBNrvt1TqPUGtNrgt9xVVFwBSfE8fBDudl2OKVEwPLoXPVhq5aJAOa7gawrDIsjRLosmOJogyyg9+b0IBdx2sgHqRJebCDFudYFmAKkrVFGKhCHkikrg33ABY2GUdMg0l9oc90NpMQmVhkQkHZZBzgtWCSu6cEMFYHpqbif9gdp7K7cRlJCxdcuBgSkuDJtY+ujrNcc+SthSv6MtqKzX7klAat3RVOsb/zUUg2Ku0I9fZ58pvVGSSUILmvkDcxGlNkeAZo/XC3ifigDkwLmdt+Kdmx4hWUUhTvC9Rg4aS+E4sY1bRemb7wV7voWKjl23sAQlTr6JXFFTsEsIS0o42a2OaGgOS6P55lW7+34yNjvkVFSPGIzzLhEtj9MraVldJFnIRv9GVMc7Nih2+LxyjutsqBXXB7waxB6r9HeWbNQNkoMHsA041rmXVp1ntvZdkhIj4d8NhT0kifyVIDKqMFYfoMnyo9q8k0chvFd/RiFNeCeCra4NFKzlc/bWyGoS/ARmL+o/EIAu4jnlU/Yo/yo5gycK3hAaj8H2oFMPjD4f5oec/ay0VJPBQZb1cXayrGzPYrI+rCqD9+jYc5H41OBs5YKZjsqmNsZ8irt88xfnAzW//OcV6/IyVcDupoyhmBJbBD9YuJ79wWGsk0tvBuVRq8vovLVCPxv+uSOeSNRf0fa6YaWN6OwqBUvrskhtJjxs4/8hOnFQfHshVqCNCriLIailZxwIaNTTN1UO010qx8lJ+PxPpNclDaR5Jpht1lgc57p/wDwPZXhTrukzwAAAABJRU5ErkJggg==" title="Y_{i} \sim \mathcal{N}\left(\beta_{0} + \beta_{\delta}X_{i}, \epsilon\right)" alt="Y_{i} \sim \mathcal{N}\left(\beta_{0} + \beta_{\delta}X_{i}, \epsilon\right)" />，此时模型参数
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" /> 包括 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" />、<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" /> 和 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAIBAMAAADHKvg1AAAAJFBMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwtfU7bAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQIHWNgYDJ2YGAIY2BgYG8AEozNlgwMCzeAWCCCfQKQYLDMXAAAY6QF6/52v3sAAAAASUVORK5CYII=" title="\epsilon" alt="\epsilon" /> 三个部分。<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAQBAMAAAAG6llRAAAAMFBMVEX///8AAADu7u52dnYQEBBUVFSqqqqIiIjc3NxERETMzMwiIiJmZma6urqYmJgyMjKNFAGRAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcklEQVQIHWNgYDIRVWATCWIAAXYJBqYJYBYDkzADM4TFwBDCYABjLkxXgDG5PWAsBh4JOPOaDJDJ9gBIcCWEwET7GBaCRICAyYCB/wMDw1Mgs5WBgU+KgY9bgWGlyAKG9dIFDP1gJWDCDsHc9ADOPtcAANaYEal63HCWAAAAAElFTkSuQmCC" title="X_{i}" alt="X_{i}" /> 代表了实验条件，比如任务难度，其中简单任务
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAANBAMAAAAZPSD6AAAAMFBMVEX///8AAADu7u52dnYQEBBUVFSqqqqIiIjc3NxERETMzMwiIiJmZma6urqYmJgyMjKNFAGRAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAqklEQVQYGWNgYDIRVWATCWLAAtglGJgmoIrz1tmCBJiEGZhRJRjWM/A3gIRCGAzQZKYxsB8ACS1MVwBRSECKgdcBxOX2QBIEMbkkGLiEQAweCRAJpENBAGgyL1AGLHZNBiIDJ4HCQEmg3oQQuBiEwSHFwAYyrY9h4QM0KVkGNgegdwwY+D+AZeD2MMxjYA9gYGhlYOCTQtNzE+TTlSILGNZLF6BKsZXZMgAA3d8YC0tUSYgAAAAASUVORK5CYII=" title="X=0" alt="X=0" />，困难任务 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAANBAMAAADyCpv5AAAAMFBMVEX///8AAADu7u52dnYQEBBUVFSqqqqIiIjc3NxERETMzMwiIiJmZma6urqYmJgyMjKNFAGRAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfElEQVQYGWNgYDIRVWATCWLAAtglGJgmoInfXwASYBJmYEaTaF8IlmEIYTBAk2FghMgsTFfAIcPtgS4B08MjAZHhCQUBsMlQ067J4NDDlRCCQ6aPYeEDdCmwaUwGDPwfwDLo9rQyMPBJYei5wMCwUmQBw3rpAlQp5cDPCwCEEhrppEmQnQAAAABJRU5ErkJggg==" title="X=1" alt="X=1" />。可见，当任务为简单时，实验数据采样与均值为
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" />，变异为 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAIBAMAAADHKvg1AAAAJFBMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwtfU7bAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQIHWNgYDJ2YGAIY2BgYG8AEozNlgwMCzeAWCCCfQKQYLDMXAAAY6QF6/52v3sAAAAASUVORK5CYII=" title="\epsilon" alt="\epsilon" />
+的正态分布，当任务为困难时，数据采样与均值为 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAARBAMAAAB6C3LTAAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA3UlEQVQYGWWQvQ4BQRRGT6z4t88gNhGlBBGdhAfYyCYKvUSnkYgCjV6pEBFPoOAVVFvoNTqi8ghmZncG61bfnDN37swAsZpHtAxzSIyi0jCX1ErLQhg0S67IaEYzkIZZcAr3o6VhVu58+ZOaWent4k9qdoej7bmBD2dKxngJFTEzRVXIrO8PfF/OkIxGEIYbHj+dQg6ZCHQh+erz/JGSMXexD5RvV6bfUjGrtyPudLpEOhUrsScuWzasvzsVq7NDfAYk1G1FKKo9irXF4TO5tD35AFOK5evQMugTNHsDduwzJUYb5VUAAAAASUVORK5CYII=" title="\beta_{0}+\beta_{\delta}" alt="\beta_{0}+\beta_{\delta}" />，变异为 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAIBAMAAADHKvg1AAAAJFBMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwtfU7bAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQIHWNgYDJ2YGAIY2BgYG8AEozNlgwMCzeAWCCCfQKQYLDMXAAAY6QF6/52v3sAAAAASUVORK5CYII=" title="\epsilon" alt="\epsilon" /> 的正态分布。
+因此，在已知两个实验条件下的实验数据，以及设定先验参数分布后，可以通过贝叶斯公式得到参数的后验分布。
+根据同样的原理，将混合模型的公式带入贝叶斯框架中可以得到如下概率分布表达
+@eq:eq6：</p>
+<p><img src="data:image/png;base64,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" title="\begin{aligned}
+Y_{i,j,k} &amp; \sim \mathcal{N}\left({\beta_{0,i,k}+\beta_{\delta,i,k} X_{i,k}, \epsilon_{i,j,k}}\right) \
+\beta_{0,i,k} &amp;= \beta_{0} + \beta_{i,k} \
+\beta_{\delta,i,k} &amp;= \beta_{\delta} + \gamma_{i,k}
+\end{aligned}" alt="\begin{aligned} Y_{i,j,k} &amp; \sim \mathcal{N}\left({\beta_{0,i,k}+\beta_{\delta,i,k} X_{i,k}, \epsilon_{i,j,k}}\right) \\ \beta_{0,i,k} &amp;= \beta_{0} + \beta_{i,k} \\ \beta_{\delta,i,k} &amp;= \beta_{\delta} + \gamma_{i,k} \end{aligned}" /></p>
+<p>{#eq:eq6}</p>
+<p>此时的模型参数<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAANBAMAAACJLlk1AAAALVBMVEX///8AAACqqqqYmJh2dnbc3NxEREQiIiKIiIju7u4yMjJUVFS6uroQEBBmZmbtjc0lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUElEQVQIHWNgYFB2ZWBgYHYIA5LhDIxAMoNhIgMDpyRDIAMDxwIGcwYG9hKX1QwMjAcYihkYAiewCjAwnGVgeQBSPncCUJZhD1ATj8UBBgYAkqEMNccipUEAAAAASUVORK5CYII=" title="\theta" alt="\theta" />包括 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLbwhQQwMBgA1XAwGIMZmXMYXjAwXGBg/xDN8IqBbwODxoPbDFUMLMouQQwgERaQ1jkMM0AGMzCwAXXVgRh8IRcYHEAMIAAAWaEXa9S+Cm8AAAAASUVORK5CYII=" title="\beta_{0}" alt="\beta_{0}" />、<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATBAMAAACXXLs2AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAApUlEQVQYGWNgYGAyCWFAAGUGtgIEL4CBYwKcxz6BgUsBzmNmYNgK5zAw8xy7gMTjnNeA4D1nYNjC4Ay0qBUkZgDTdxLKywSrXAAiLzCwf2A+AFT5YfIDBr4NDBoPDD4xMLDsLHVgYFF2CWJgT2Bg4AapZwFiBl6gUfwvHBgYgE4BspTZGfRZtj9gqAPxuM05At4yAR3oAOIBgQOYhBJME5B5YMMYAHeNHdHZKthqAAAAAElFTkSuQmCC" title="\beta_{i,k}" alt="\beta_{i,k}" />、<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAARBAMAAAAmgTH3AAAAMFBMVEX///8AAADu7u6YmJiqqqqIiIgyMjLc3NxERES6uroQEBBmZmZUVFR2dnbMzMwiIiIX4y8iAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAfUlEQVQIHWNgYGAyCWEAA2UGtgIwI4CBYwKIwT6BgUsBxGBmYNgKohmYeY5dgDA45zWAGc8ZGLYwlLYyMBiA1JgDxYCMTIYKIOMCA/sHhvoABr4NDBoPmMMXMLAouwQxqDEsYmABaTVlWAAymIHBGaigDsTgNWVgcAAxgAAA6NgUzpJAD/QAAAAASUVORK5CYII=" title="\beta_{\delta}" alt="\beta_{\delta}" />、<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAOBAMAAADH1sFNAAAAMFBMVEX///8AAAB2dnYQEBAiIiLMzMyqqqpUVFSIiIi6uroyMjLu7u6YmJjc3NxmZmZERER8QKP8AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAgklEQVQIHWNgUHZlYGOAAvZOLYZsGCeVgXPCAbYDDAz7GxgYLjAwHA1gAAL2CSCS4QyYZAaTDMcYjgMZWziPgrjaPCwbGBjy5raBOA0Mt4DkK4ieBww6QI7rN5AE6wEG7wMXuB3yrgI5HBcY3lz4waqwrwHEAWKEi0CcnSACBhJADACXhh2MfdBRqwAAAABJRU5ErkJggg==" title="\gamma_{i,k}" alt="\gamma_{i,k}" /> 和 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAIBAMAAADHKvg1AAAAJFBMVEX///8AAACIiIh2dna6uroyMjKqqqpmZmZUVFSYmJju7u7c3NwtfU7bAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQIHWNgYDJ2YGAIY2BgYG8AEozNlgwMCzeAWCCCfQKQYLDMXAAAY6QF6/52v3sAAAAASUVORK5CYII=" title="\epsilon" alt="\epsilon" />
+五个个部分（如果考虑随机效应间的相关性还需设定其他参数，这里尽量简化模型方便理解）。</p>
+<p>由于模型参数增加，贝叶斯在计算时会遇到困难，因此会采用mcmc采样，即brms中使用的算法。这种算法通过从后验分本中采集样本来模拟真实的后验分布。</p>
+<h1 id="id_2-references">2 References</h1>
+
+</body>
+</html>
