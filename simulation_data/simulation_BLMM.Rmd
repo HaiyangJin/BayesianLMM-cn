@@ -1,28 +1,106 @@
 ---
-title: "simulation_for_linear_mixed_model"
-author: "Xiujuan Wen"
-date: '2022-07-25'
-output:
-  word_document:
-    toc: yes
-    toc_depth: '4'
-  html_document:
-    #code_folding: hide
-    number_sections: yes
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
-csl: apa.csl
-bibliography: BLMM_Ref.bib
+title             : "这是标题"
+shorttitle        : "这是页眉标题"
+
+author: 
+  - name          : "First Author"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "my@email.com"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Ernst-August Doelle"
+    affiliation   : "1,2"
+    role:
+      - "Writing - Review & Editing"
+      - "Supervision"
+
+affiliation:
+  - id            : "1"
+    institution   : "Wilhelm-Wundt-University"
+  - id            : "2"
+    institution   : "Konstanz Business School"
+
+authornote: |
+  author note here.
+
+abstract: (ref:abstract)
+  
+keywords          : "bayesian; GLMM"
+# wordcount         : "X"
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+header-includes:
+  - |
+    \makeatletter
+    \renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+      {-1em}%
+      {\normalfont\normalsize\bfseries\typesectitle}}
+    
+    \renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+      {-\z@\relax}%
+      {\normalfont\normalsize\bfseries\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+    \makeatother
+
+zotero:
+  library: BayesMultiTutorial-cn
+  scannable_cite: false
+  client: zotero
+  author-in-text: false
+  csl-style: apa
+link-citations: yes
+# pandoc-crosspref
+tblLabels: arabic
+equationNumberTeX: "公式"
+eqnIndexTemplate: $$i$$
+secPrefix: ""
+figPrefix: 
+  - "图"
+  - "图"
+tblPrefix: 
+  - "表"
+  - "表"
+eqnPrefix: 
+  - "公式"
+  - "公式"
+
+citeproc: no
+pandoc-crossref: yes
+linkReferences: true
+nameInLink: true
+
+csl: "`r system.file('rmd', 'apa7.csl', package = 'papaja')`"
+documentclass: "apa7"
+classoptions: doc
+output: 
+  bookdown::github_document2: default
+  papaja::apa6_docx:
+    pandoc_args: [
+    "--lua-filter=zotero.lua",
+    "-Fpandoc-crossref"
+    ]
+    keep_md: true
 ---
 
-```{r include=FALSE}
-knitr::opts_chunk$set()
-library(papaja)
-library(rbbt)
-library(rio)
+```{r setup, include = FALSE}
+library("papaja")
+```
+```{r 第一部分, child="text_content/main_content.Rmd"}
 ```
 
+```{r 第二部分}
+```
 ```{r setup, results='hide'}
 #加载需要使用的R包
 if (!require(tidyverse)) {library(tidyverse)}
@@ -103,14 +181,42 @@ head(df_simu, 5)#查看数据结构
 # 数据分析
 接下来对数据进行建构贝叶斯线性混合模型。在这部分将使用`brms`的R包 @burknerBrmsPackageBayesian2017a 进行分析。`brms`目前常用贝叶斯模型分析之中 @burknerBayesianDistributionalNonLinear @burknerAdvancedBayesianMultilevel2017;  @ladislasIntroductionBayesianMultilevel2019;  @vasishthBayesianDataAnalysis2018。关于`brms`包的更多详细内容可以见以下的网址https://paul-buerkner.github.io/brms/ 。
 
+## 先验的设置
+正如前文所述，在运用贝叶斯模型之前，我们需要先设置先验信息。而如何设置一个合适的先验信息对于初学者来说却是一个并不容易的事。先验分布是模型参数的预先设置的分布形态，它赋予了模型参数在数据分析之前相对合理性的信息，然后用用数据的信息更新先验信息，以获得模型参数的后验信息。在我们的数据模型中需要建立$ LPP = \beta_{Intercepet}+\beta_{group} X_{group} + \beta_{type} X_{type} + sd_{type}+sd_{intecept} + \epsilon$这样的线性混合模型，那么需要指定固定截距$\beta_{Intercept}$,固定斜率$beta_{group}$,固定斜率 $\beta_{type}$以及误差项$\epsilon$，随机斜率$sd_{type}$，随机截距$sd_{intecept}$的先验分布。在`brms`中如果没有设置设置先验，那么会默认采用负无穷到正无穷的平均分布，但是这样极容易影响后验估计的准确性，致使得出错误的结论。在设置先验分布时，我们需要确定参数的先验分布的大致形状，常见的分布有二项分布、正态分布、泊松分布等。关于先验分布的设置可以利用先验信息确认先验分布。具体方法可以参考@sarmaPriorSettingPractice2020。在这个例子中，我们预设参数是符合正态分布的。接着需要确定正态分布的平均数以及方差等超参数，这时需要进行先验预测（Prior predictive distribution），以检验所设置的超参数是否合适。我们可以采用`brms`包里面的`sample_prior ="only"`等进行检验。
+在`model_predict`中，`LPP`是因变量，`group`和`type`是自变量。`family`代表模型中使用的反应分布和相关函数。`prior`定义了模型的先验信息，如果不设置这个参数，那么模型建立中*先验*会默认使用均匀分布。`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup` '迭代来近似后端分布的形状。如果想要了解更多，可以见 @McElreath:2016 。
+之后我们使用`pp_check`进行检验，看其平均数（mean）、最大值（max），最小值（min）是否在所预测的分布中，如果均包括，那么这个先验分布的设置是合适的。
+```{r}
+## 定义先验分布
+prior = c(
+  prior(normal(0, 2), class = Intercept),
+  prior(normal(0, 2), class = b),
+  prior(normal(0, 2), class = sigma),
+  prior(normal(0, 2), class = sd),
+  prior(lkj(2), class = cor)
+)
+model_predict <- brm(LPP ~ group * type + (1 + type | subj), 
+               data = df_simu,
+               family="gaussian",
+               cores = 4,
+               chains = 4,
+               warmup =1000,
+               iter = 5000,
+               sample_prior ="only",
+               prior=prior)
+pp_check(model_predict, type = "stat", stat = "min")
+pp_check(model_predict, type = "stat", stat = "max")
+pp_check(model_predict, type = "stat", stat = "mean")
+```
+从上图呈现的图来看，先验分布是合适的。如果觉得不合适，可以再次调整预设的先验分布的超参数，以调整至合适的参数为止。
+
 ## 添加固定效应
-为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。在`model_1`中，`LPP`是因变量，`group`和`type`是自变量。`family`代表模型中使用的反应分布和相关函数。`prior`定义了模型的先验信息，如果不设置这个参数，那么模型建立中*先验*会默认使用均匀分布。`summary`可以帮助我们展示模型拟合后的参数情况。`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup` '迭代来近似后端分布的形状。`plot`可以显示模型拟合后的参数的分布情况以及MCMC情况的图示化结果。如果想要了解更多，可以见 @McElreath:2016 。
+为了更好地理解贝叶斯混合线性模型，首先我们建立只有固定效应的模型。`model_1`中`brm`函数后的参数设置参见先验的设置部分的说明。与先验的设置不同，在模型建立中采用`sample_prior ="yes"`,以期纳入现有数据的分布影响，从而得到数据模型的后验分布。`summary`可以帮助我们展示模型拟合后的参数情况。`plot`可以显示模型拟合后的参数的分布情况以及MCMC情况的图示化结果。
 ```{r, results = "hide"}
 # 定义参数的先验信息
 prior <- c(
-  prior(normal(0, 5), class = Intercept),
-  prior(normal(0, 5), class = b),
-  prior(normal(0, 5), class = sigma)
+  prior(normal(0, 2), class = Intercept),
+  prior(normal(0, 2), class = b),
+  prior(normal(0, 2), class = sigma)
 )
 #建立模型
 model_1 <- brm(LPP ~ group * type, 
@@ -118,8 +224,8 @@ model_1 <- brm(LPP ~ group * type,
                family="gaussian",
                cores = 4,
                chains = 4,
-               warmup = 2000,
-               iter = 10000,
+               warmup = 1000,
+               iter = 5000,
                sample_prior ="yes",
                prior = prior)
 summary(model_1)#查看参数情况
@@ -129,7 +235,7 @@ plot(model_1)   #查看每个参数的分布和抽样情况
 summary(model_1)#可以查看参数情况
 ```
 
-`Population-Level Effects`代表固定效应部分参数的后验情况。Intercept 代表模型中的固定截距。`group2M1`代表$\beta_{(group)}$，指的是组别变量的固定斜率。`type2M1`代表$\beta_{(type)}$，指的是图片类型变量的固定斜率。 `group2M1:type2M1`代表组别和图片类型交互作用的固定斜率。`Estimate`表示参数的估计值，`Est.Error`代表估计值的标准误。`l-95% CI`和`u-95% CI`代表参数的可信区间。`sigma`代表残差项的后验分布参数。 `Rhat`代表参数的收敛情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat应该尽量接近于1，这说明模型的收敛情况较好，但是尽量不要超过1.01。另外也可以使用`bayestestR` 包的函数进行判断模型的收敛情况。
+`Population-Level Effects`代表固定效应部分参数的后验情况。Intercept 代表模型中的固定截距。`group2M1`参数估计代表$\beta_{(group)}$，指的是组别变量的固定斜率。`type2M1`参数估计代表$\beta_{(type)}$，指的是图片类型变量的固定斜率。而`group2M1`以及`type2M1`中的`2M1`代表组别之间以及类型之间的效应的相减，即$\beta_{(Control-Depression)}$或者$\beta_{(Positive-Negative)}$。 `group2M1:type2M1`代表组别和图片类型交互作用的固定斜率。`Estimate`表示参数的估计值，`Est.Error`代表估计值的标准误。`l-95% CI`和`u-95% CI`代表参数的可信区间。`sigma`代表残差项的后验分布参数。 `Rhat`代表参数的收敛情况。在模型拟合的数据中如果Rhat>1.01说明模型的收敛情况并不理想，Rhat应该尽量接近于1，这说明模型的收敛情况较好，但是尽量不要超过1.01。另外也可以使用`bayestestR` 包的函数进行判断模型的收敛情况。
 
 ```{r, eval=FALSE}
 if (!require(bayestestR)) {library(bayestestR)}
@@ -169,12 +275,12 @@ plot(model_1)  #查看每个参数的分布和抽样情况
 图 \@ref(fig:plot_model_1) 描述了model_1中固定截距、固定斜率、残差的后验分布以及MCMC抽样情况。图的左边是参数的后验分布，x轴代表参数值；图的右边是逼近后验分布的两个行为的模拟(即4条链的轨迹图)，x轴代表迭代数，y轴代表参数值。这轨迹图显示了平均值周围的随机波动。
 
 ## 添加随机效应
-接下来在后面的模型中加入一些随机截距。
+接下来在后面的模型中加入一些随机效应。而随机效应项一般是由随机截距和随机斜率组成。正如前文提到随机效应的设置是为了更好地排除由个体差异的因素所带来的影响，这样可以时固定效应的参数更加精准的估计。在`brms`包中提供了对随机效应设置的语法，我们可以在`brm`函数采用`(1 | xxx )`类似的结构进行设置随机截距，`xxx`可以设置随机变量，如被试`subj`或者实验因素`type`，而在我们需要建立的模型中，我们只对subj指定了随机截距。然后在1后加上需要设置随机斜率的因子， 如`（1 + type | subj）`。首先我们先在上述模型中添加随机截距。
 ```{r, results = "hide"}
 prior = c(
-  prior(normal(0, 5), class = Intercept),
-  prior(normal(0, 5), class = b),
-  prior(normal(0, 5), class = sigma),
+  prior(normal(0, 2), class = Intercept),
+  prior(normal(0, 2), class = b),
+  prior(normal(0, 2), class = sigma),
   prior(normal(0, 2), class = sd)
 )
 model_2 <- brm(LPP ~ group * type + (1 |subj), 
@@ -182,8 +288,8 @@ model_2 <- brm(LPP ~ group * type + (1 |subj),
                family="gaussian",
                cores = 4,
                chains = 4,
-               warmup =2000,
-               iter = 10000,
+               warmup =1000,
+               iter = 5000,
                sample_prior ="yes",
                prior = prior)
 summary(model_2)#查看参数情况
@@ -197,9 +303,9 @@ summary(model_2)#可以查看参数情况
 然后在`model_2`模型的代码基础之上加上随机斜率,探究在不同被试下图片类型对LPP波幅的影响。
 ```{r,results = "hide"}
 prior = c(
-  prior(normal(0, 5), class = Intercept),
-  prior(normal(0, 5), class = b),
-  prior(normal(0, 5), class = sigma),
+  prior(normal(0, 2), class = Intercept),
+  prior(normal(0, 2), class = b),
+  prior(normal(0, 2), class = sigma),
   prior(normal(0, 2), class = sd),
   prior(lkj(2), class = cor)
 )
@@ -208,8 +314,8 @@ model_3 <- brm(LPP ~ group * type + (1 + type | subj),
                family="gaussian",
                cores = 4,
                chains = 4,
-               warmup =2000,
-               iter = 10000,
+               warmup =1000,
+               iter = 5000,
                sample_prior ="yes",
                prior=prior)
 
@@ -293,8 +399,9 @@ loo_compare(loo(model_1),loo(model_2),loo(model_3))
 由于实验操作过程中难免会出现失误，可能最后数据中难免出现缺失值。最简单的解决方法无非是将缺失的地方进行删除，但是如果该数值并不是完全随机缺失的，这就可能导致数据分析中出现偏差。一般可以采用两种方法处理缺失值。一是在模型拟合之前将缺失值进行多重插值；二是在模型拟合过程中进行动态地进行缺失值的多重插值。这个可以采用mi函数进行多重插值。更多详细内容可以参考https://cran.r-project.org/web/packages/brms/vignettes/brms_missings.html。
 
 
-# 参考文献
 
+\newpage
 
+# References
 
 
