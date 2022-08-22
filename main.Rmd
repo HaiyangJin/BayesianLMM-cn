@@ -73,10 +73,9 @@ documentclass: "apa7"
 classoptions: doc
 output: 
   papaja::apa6_docx:
-    "--lua-filter=zotero.lua",
-    "-Fpandoc-crossref"
-    ]
     pandoc_args: [
+      "--lua-filter=zotero.lua",
+      "-Fpandoc-crossref"]
     keep_md: true
   bookdown::github_document2: default
 ---
