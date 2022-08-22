@@ -1,87 +1,20 @@
 ---
-title             : "这是标题"
-shorttitle        : "这是页眉标题"
-author: 
-  - name          : "First Author"
-    affiliation   : "1"
-    corresponding : yes    # Define only one corresponding author
-    address       : "Postal address"
-    email         : "my@email.com"
-    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
-      - "Conceptualization"
-      - "Writing - Original Draft Preparation"
-      - "Writing - Review & Editing"
-  - name          : "Ernst-August Doelle"
-    affiliation   : "1,2"
-    role:
-      - "Writing - Review & Editing"
-      - "Supervision"
-affiliation:
-  - id            : "1"
-    institution   : "Wilhelm-Wundt-University"
-  - id            : "2"
-    institution   : "Konstanz Business School"
-authornote: |
-  author note here.
-abstract: (ref:abstract)
-  
-keywords          : "bayesian; GLMM"
-# wordcount         : "X"
-floatsintext      : no
-figurelist        : no
-tablelist         : no
-footnotelist      : no
-linenumbers       : yes
-mask              : no
-draft             : no
-header-includes:
-  - |
-    \makeatletter
-    \renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
-      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
-      {-1em}%
-      {\normalfont\normalsize\bfseries\typesectitle}}
-      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
-      {-\z@\relax}%
-      {\normalfont\normalsize\bfseries\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
-zotero:
-  library: BayesMultiTutorial-cn
-  scannable_cite: false
-  client: zotero
-  author-in-text: false
-  csl-style: apa
-link-citations: yes
-tblLabels: arabic
-equationNumberTeX: "公式"
-eqnIndexTemplate: $$i$$
-secPrefix: ""
-figPrefix: 
-  - "图"
-  - "图"
-tblPrefix: 
-  - "表"
-  - "表"
-eqnPrefix: 
-  - "公式"
-  - "公式"
-citeproc: no
-pandoc-crossref: yes
-linkReferences: true
-nameInLink: true
-csl: "`r system.file('rmd', 'apa7.csl', package = 'papaja')`"
-documentclass: "apa7"
-classoptions: doc
-output: 
-  papaja::apa6_docx:
-    pandoc_args: [
-      "--lua-filter=zotero.lua",
-      "-Fpandoc-crossref"]
-    keep_md: true
-  bookdown::github_document2: default
+title: "simulation_for_linear_mixed_model"
+author: "Xiujuan Wen"
+date: '2022-07-25'
+output:
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  html_document:
+    #code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+csl: apa.csl
+bibliography: BLMM_Ref.bib
 ---
-
-
-
 ```{r setup, results='hide', include = FALSE}
 #加载需要使用的R包
 library("papaja")
@@ -348,13 +281,13 @@ as.data.frame(model_3) %>%
 # 组间差异以及组内差异的比较
 
 研究中通常需要比较组间差异或者组内各条件的差异。使用贝叶斯模型进行组间或者组内条件比较时需要注意，在贝叶斯线性混合效应模型中，一般可以将组间条件和组内条件的参数纳入，从而比较组间因素与组内因素相关的参数。我们可以通过`library(BayestestR)` [@makowskiBayestestRDescribingEffects2019] 计算模型中的可信区间、最大后验概率估计(Maximum A Posteriori, MAP)、显著性方向概率(Probability of Direction, pd)、全后验分布百分比（percentage of the full posterior distribution,ROPE）、贝叶斯因子（Bayes factor, BF）等 [@makowskiIndicesEffectExistence2019]。在贝叶斯模型参数比较中，比较推荐报告以上的指标 [@makowskiIndicesEffectExistence2019]。ROPE中的百分比是一个重要的指数，它一定程度上可以作为显著性指数的标准 [@makowskiIndicesEffectExistence2019]。关于除ROPE指标外其他贝叶斯模型模型参数报告的更多详细内容可见 https://easystats.github.io/bayestestR/articles/guidelines.html。
-```{r para_comprion,eval=FALSE,echo=TRUE}
+```{r para_comprion}
 describe_posterior(model_3,centrality = "all", dispersion = TRUE,ci =0.95,test = "all")
 ```
 使用`describe_posterior`可以输出贝叶斯模型比较的参数情况。从以上的输出可知，在两组比较中，我们会发现，$\beta_{group}$参数的ROPE的百分比小于1%，这说明我们可以拒绝零假设，两组之间存在显著的差异性。而$\beta_{(type)}$的ROPE的百分比也小于1%，这说明我们可以拒绝零假设，抑郁症患者和健康对照组中正性图片和负性图片存在显著性的差异，即组内各条件存在显著性差异。
 
 当然在心理学研究中，有不少的贝叶斯统计的支持者主张使用贝叶斯因子进行假设检验 [@rouderBayesianInferencePsychology2018]。在以下的代码中我们将采用直接计算贝叶斯因子对组间差异以及组内差异进行检验。使用`brms`的`hypothesis`函数便可直接进行假设检验，并从中提取出贝叶斯因子。
-```{r include=FALSE}
+```{r}
 #组内比较
 n=hypothesis(model_3,"type2M1=0")
 withinGroup_comparion_BF=n$hypothesis$Evid.Ratio
@@ -387,6 +320,7 @@ loo_compare(loo(model_1),loo(model_2),loo(model_3))
 
 \newpage
 
-# References
+# 参考文献
+
 
 
