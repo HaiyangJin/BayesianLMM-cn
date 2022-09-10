@@ -30,9 +30,27 @@ set.seed(2022)
 
 # 假想的心理学实验
 
-我们借助一个假想的实验来展示如何使用贝叶斯混合效应模型分析实验心理学的数据。该实验的目的是探究抑郁症人群加工不同类型图片的神经基础。在该实验中，我们招募了抑郁症患者和健康对照组被试各30人。所有的被试都观看了30张积极图片和30张消极图片，且每张图片呈现10次。在实验过程中，同时还记录了被试的脑电。我们所关注的因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别group：抑郁症患者depression、对照组 control ；被试间) × 2 (图片类型type：积极positive、消极negative；被试内) 的混合实验设计。我们使用(DeBruine, 2021)的`faux`工具包生成该假想实验的数据。模拟数据使用的参数如表X所示【把这个做成一个Table？】，模拟数据使用的脚本请见补充材料。
+我们借助一个假想的实验来展示如何使用贝叶斯混合效应模型分析实验心理学的数据。该实验的目的是探究抑郁症人群加工不同类型图片的神经基础。在该实验中，我们招募了抑郁症患者和健康对照组被试各30人。所有的被试都观看了30张积极图片和30张消极图片，且每张图片呈现10次。在实验过程中，同时还记录了被试的脑电。我们所关注的因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别group：抑郁症患者depression、对照组 control ；被试间) × 2 (图片类型type：积极positive、消极negative；被试内) 的混合实验设计。我们使用(DeBruine, 2021)的`faux`工具包生成该假想实验的数据。模拟数据使用的参数如表\@ref(tab:Table_1)所示，模拟数据使用的脚本请见补充材料。
 
-```{r results='hide'}
+```{r Table_1,results='hide'}
+if (!require(papaja)) {library(papaja)}
+if (!require(tibble)) {library(tibble)}
+para<-t(as.data.frame(c(60,2.5,4.2,4.5,2.4,2,2,4)))
+rownames(para) <- c("参数值")
+colnames(para) <- c("subj_n","b0", "b1", "b2", "b3","u0s","u1s","sigma")
+apa_table(
+    para,
+    placement = "H",
+    align = c("c", "c", "c", "c", "c", "c","c"),
+    caption = "模拟数据的参数设置",
+    note = "subj_n代表总被试量，b0是截距，b1是图片类型的固定效应，b2是组别的固定效应，b3是图片类型与组别的交互作用，u0s是被试的随机截距，u1s是被试的随机斜率，sigma 是误差项",
+    small = TRUE,
+    digits = 3,
+    escape = FALSE
+    )
+```
+
+```{r,results='hide'}
 subj_n <- 60   # 总被试量：抑郁患者30人，健康对照组被试30人
 trial_n <- 10  # 每张图片呈现的次数
 
@@ -91,7 +109,7 @@ head(df_simu, 5)#查看数据结构
 
 # 数据分析
 
-接下来，我们将借助R的`brms`工具包 (Bürkner, 2017b)构贝叶斯线性混合效应模型以分析该假想实验的模拟数据。`brms`工具包是目前最流行的贝叶斯数据分析工具之一(Bürkner, 2017a, 2017b; Ladislas等, 2019; Vasishth等, 2018)。在进行数据分析之前，我们需要对数据(`df_simu`)中的称名(自)变量(nominal factors)进行编码(contrast coding)。这里我们使用XX(`MASS::contr.sdif()`)【查一下MASS::contr.sdif(2)这个编码对应的中文名是什么】对组别(`group`)和图片类型(`type`)这两个自变量进行编码。通过此设定，贝叶斯模型的输出结果更接近于大家所熟知的主效应和交互作用。对变量编码感兴趣的读者推荐阅读Schad等(2020)。
+接下来，我们将借助R的`brms`工具包 (Bürkner, 2017b)构贝叶斯线性混合效应模型以分析该假想实验的模拟数据。`brms`工具包是目前最流行的贝叶斯数据分析工具之一(Bürkner, 2017a, 2017b; Ladislas等, 2019; Vasishth等, 2018)。在进行数据分析之前，我们需要对数据(`df_simu`)中的称名(自)变量(nominal factors)进行编码(contrast coding)。这里我们使用逐次差分对比编码（Successive Differences Contrast Coding）(`MASS::contr.sdif()`)对组别(`group`)和图片类型(`type`)这两个自变量进行编码。通过此设定，贝叶斯模型的输出结果更接近于大家所熟知的主效应和交互作用。对变量编码感兴趣的读者推荐阅读Schad等(2020)。
 ```{r}
 # 设定-0.5和0.5的编码
 contrasts(df_simu$group) <- MASS::contr.sdif(2)
@@ -102,7 +120,7 @@ contrasts(df_simu$type) <- MASS::contr.sdif(2)
 
 在建立贝叶斯线性混合效应模型时，研究者首先需要考虑那鞋设定固定效应和随机效应。在模拟的实验数据中，我们将组别和图片类型纳入固定效应之中，而将被试纳入随机效应之中。另外在实验中，每个被试在不同图片类型下对脑电波幅的影响也存在差异，因此我们需要在模型下考虑不同图片类型影响脑电波幅的个体差异。所以在建立模型中会将图片类型作为随机斜率纳入随机效应之中。
 
-首先，我们建立一个只包含固定效应的模型。具体来说，该模型的固定效应包含组别(`group`)和图片类型(`type`)这两个自变量，以及他们的交互作用：【请见model_1的代码部分【这部分直接展示吧？这是计划要把这部分代码放在别的地方吗？】】
+首先，我们建立一个只包含固定效应的模型model_1。具体来说，该模型的固定效应包含组别(`group`)和图片类型(`type`)这两个自变量，以及他们的交互作用,详细请见model_1的代码部分。【这部分直接展示吧？这是计划要把这部分代码放在别的地方吗？——没明白，这是有什么问题吗？】】
 ```{r}
 #建立只有固定效应的模型
 model_1 <- brm(LPP ~ group * type, 
@@ -110,21 +128,20 @@ model_1 <- brm(LPP ~ group * type,
                cores = 4,
                chains = 4,
                warmup = 2000,
-               iter = 5000,
-               sample_prior ="yes") # [这个模型为什么要采先验？]
+               iter = 5000)
 ```
-在以上部分代码中，`LPP`是因变量，即LPP的波幅，`group * type`表示`group`和`type`这两个自变量以及他们的交互作用  `df_simu`表示数据集。【这里先不改，需要看一下在前面是否会讲MCM以及这些概念】`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数指的是用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup`迭代来近似后端分布的形状。`sample_prior ="yes"`，表示需要从现有数据进行取样。如果想要了解更多【这里指的是了解更多什么？更多关于sample_prior?还是更多关于brm的设定？】，可以见(McElreath, 2016)。
+在以上部分代码中，`LPP`是因变量，即LPP的波幅，`group * type`表示`group`和`type`这两个自变量以及他们的交互作用  `df_simu`表示数据集。【这里先不改，需要看一下在前面是否会讲MCM以及这些概念】`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数指的是用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup`迭代来近似后端分布的形状。如果想要了解更多关于brm函数参数设定问题可以见(McElreath, 2016)。
 
 `summary()`可以帮助我们展示模型拟合后的参数情况。以下内容是model_1的结果。
 ```{r}
 summary(model_1)#可以查看参数情况
 ```
 
-`Population-Level Effects`展示了固定效应参数的结果。其中，`Intercept` 是模型的固定截距，表示所有被试的平均LPP波幅。`group2M1`表示在平均图片类型的效应之后，健康对照组的LPP波幅减去抑郁症组LPP波幅的差值，即组别的主效应。与此类似，`type2M1`是在平均组别的效应之后，积极图片诱发的LPP波幅减去消极图片诱发的LPP波幅的差值，即图片类型的主效应。`group2M1:type2M1`表示差的差，即（$(LPP_{健康对照组,积极图片}-LPP_{健康对照组,消极图片})-(LPP_{抑郁症组,积极图片}-LPP_{抑郁症组,消极图片})$，也就是组别和图片类型交互作用。需要注意的是，对这些效应的解释是建立在使用`MASS::contr.sdif()`或类似的编码的基础之上。如果使用不同的编码，这些效应的解释也会相应的有所不同(Schad等，2020)。此外，`Estimate`表示参数的后验抽样的均值，`Est.Error`表示后验样本的标准误。`l-95% CI`和`u-95% CI`表示参数的95%可信区间。`sigma`表示残差项的后验分布参数。 `Rhat`代表参数的收敛情况。`Rhat`应该尽量接近于1，表示模型的收敛情况较好。但如果`Rhat`>1.01则说明模型的收敛情况并不理想。另外也可以使用`bayestestR`工具包的函数【那个函数？】判断模型的收敛情况：【如果你确定要包含这部分内容的话，你需要介绍具体如何使用这个功能，比如输出的结果应该怎么理解】
+`Population-Level Effects`展示了固定效应参数的结果。其中，`Intercept` 是模型的固定截距，表示所有被试的平均LPP波幅。`group2M1`表示在平均图片类型的效应之后，健康对照组的LPP波幅减去抑郁症组LPP波幅的差值，即组别的主效应。与此类似，`type2M1`是在平均组别的效应之后，积极图片诱发的LPP波幅减去消极图片诱发的LPP波幅的差值，即图片类型的主效应。`group2M1:type2M1`表示差的差，即（$(LPP_{健康对照组,积极图片}-LPP_{健康对照组,消极图片})-(LPP_{抑郁症组,积极图片}-LPP_{抑郁症组,消极图片})$，也就是组别和图片类型交互作用。需要注意的是，对这些效应的解释是建立在使用`MASS::contr.sdif()`或类似的编码的基础之上。如果使用不同的编码，这些效应的解释也会相应的有所不同(Schad等，2020)。此外，`Estimate`表示参数的后验抽样的均值，`Est.Error`表示后验样本的标准误。`l-95% CI`和`u-95% CI`表示参数的95%可信区间。`sigma`表示残差项的后验分布参数。 `Rhat`代表参数的收敛情况。`Rhat`应该尽量接近于1，表示模型的收敛情况较好。但如果`Rhat`>1.01则说明模型的收敛情况并不理想。另外也可以使用`effectsize`工具包的`interpret_rhat`函数判断模型的收敛情况。如果输出是“converge”，则说明模型是收敛。在使用这个函数之前需要借助`bayestestR`包的`diagnostic_posterior`函数对model_1进行诊断。
 
 ```{r}
 if (!require(bayestestR)) {library(bayestestR)}
-post_diag<- diagnostic_posterior(model_1)
+post_diag<- diagnostic_posterior(model_1)#
 effectsize::interpret_rhat(post_diag$Rhat)
 ```
 
@@ -132,18 +149,17 @@ effectsize::interpret_rhat(post_diag$Rhat)
 ```{r}
 plot(model_1)
 ```
-`plot()`可以显示模型拟合后的参数的分布情况以及MCMC情况的图示化结果。图2即是model_1的图示化结果。
+`plot()`可以显示模型拟合后的参数的分布情况以及MCMC情况的图示化结果。图即是@\ref(fig:plot_model_1)的图示化结果。
 
 
 ```{r plot_model_1, dpi = 300, echo = FALSE, fig.pos = "H", fig.cap = "左列是参数的后验分布图，右列是参数抽样的轨迹图。"}
 plot(model_1)  #查看每个参数的分布和抽样情况
 ```
-图2【图的corss-reference你需要和晚珂讨论确定一下，应该不是直接这么写】描述了model_1中固定截距、固定斜率、残差的后验分布以及MCMC抽样情况。图的左边是参数的后验分布，x轴代表参数值；图的右边是逼近后验分布的两个行为的模拟(即4条链的轨迹（trace）图)，x轴代表迭代数，y轴代表参数值。如果一条链探索了目标参数的许多不同值，并且不在参数空间的同一区域，那么认为这条链是混合良好（well mixed）的。这些轨迹图显示了均值周围的随机分布，看起来类似毛毛虫。 
-图 \@ref(fig:plot_model_1)描述了model_1中固定截距、固定斜率、残差的后验分布以及MCMC抽样情况。图的左边是参数的后验分布，x轴代表参数值；图的右边是逼近后验分布的两个行为的模拟(即4条链的轨迹图)，x轴代表迭代数，y轴代表参数值。这轨迹图显示了平均值周围的随机波动。
+图@\ref(fig:plot_model_1)描述了model_1中固定截距、固定斜率、残差的后验分布以及MCMC抽样情况。图的左边是参数的后验分布，x轴代表参数值；图的右边是逼近后验分布的两个行为的模拟(即4条链的轨迹（trace）图)，x轴代表迭代数，y轴代表参数值。如果一条链探索了目标参数的许多不同值，并且不在参数空间的同一区域，那么认为这条链是混合良好（well mixed）的。这些轨迹图显示了均值周围的随机分布，看起来类似毛毛虫。 
 
 ## 添加随机效应 
 
-在只有固定效应的模型中，我们预设所有的被试的平均LPP的波幅，以及各个条件对每个被试LPP的影响都是一样的。但在实际情况中，每个被试的平均LPP的波幅更可能各不相同，并且被个被试的LPP受到各个条件的影响也更可能是存在差异的。为了考虑这些方面，我们需要在模型中设置随机效应。随机效应项主要包含随机截距（random intercept）和随机斜率（random slope）【如果前面写过英文，这里就不需要了】。我们首先在只有固定效应的模型基础上，增加基于被试（by-subject）的随机截距， 即`+ (1 | subj)`。
+在只有固定效应的模型中，我们预设所有的被试的平均LPP的波幅，以及各个条件对每个被试LPP的影响都是一样的。但在实际情况中，每个被试的平均LPP的波幅更可能各不相同，并且被个被试的LPP受到各个条件的影响也更可能是存在差异的。为了考虑这些方面，我们需要在模型中设置随机效应。随机效应项主要包含随机截距和随机斜率。我们首先在只有固定效应的模型基础上，增加基于被试（by-subject）的随机截距， 即`+ (1 | subj)`。
 
 ```{r, results = "hide"}
 model_2 <- brm(LPP ~ group * type + (1 |subj), 
@@ -152,11 +168,17 @@ model_2 <- brm(LPP ~ group * type + (1 |subj),
                chains = 4,
                warmup =1000,
                iter = 5000)
-summary(model_2)#查看参数情况 
-plot(model_2)   #查看每个参数的分布和抽样情况 【这个代码最好与上面分开吧】
 ```
 
-`Population-Level Effects`是`model_2`的固定效应部分，解释与`model_1`类似。与`model_1`不同，`model_2`加入了随机截距部分（即`+ (1 | subj)`）。 `Group-Level Effects`中的`sd(Intercept)`是随机截距标准差（standard deviation）的后验分布情况。当我们使用XX编码时，该随机截距的标准差反映了各个被试LPP不同条件下平均波幅的离散程度。
+```{r}
+summary(model_2)#查看参数情况 
+```
+
+```{r}
+plot(model_2)   #查看每个参数的分布和抽样情况
+```
+
+`Population-Level Effects`是`model_2`的固定效应部分，解释与`model_1`类似。与`model_1`不同，`model_2`加入了随机截距部分（即`+ (1 | subj)`）。 `Group-Level Effects`中的`sd(Intercept)`是随机截距标准差（standard deviation）的后验分布情况。当我们使用逐次差分对比编码时，该随机截距的标准差反映了各个被试LPP不同条件下平均波幅的离散程度。
 
 虽然`model_2`考虑了被试不同的平均LPP波幅，但它仍然预设每个被试受到各个条件（例如图片类型）的影响是相同的。但每个被试的LPP波幅受到图片类型的影响更可能是不同的。因此，我们需要设置随机斜率来考虑被试LPP波幅受到图片类型的不同影响，即在`model_2`模型的基础之上增加随机斜率,即`(1 + type | subj)`:
 
@@ -168,21 +190,22 @@ model_3 <- brm(LPP ~ group * type + (1 + type | subj),
                warmup =1000,
                iter = 5000,
                sample_prior ="yes")
+```
+
+```{r}
 summary(model_3)#查看参数情况
+```
+```{r}
 plot(model_3) #查看每个参数的后验分布和抽样情况
 plot(model_3, variable = "^b", regex = TRUE) #查看固定效应部分的参数分布情况
 ```
-```{r echo=FALSE}
-summary(model_2)#可以查看参数情况 【这个是用来干什么的？】
-```
 
-`Population-Level Effects`是`model_3`的固定效应部分，解释与model_1相同。与model_2不同，model_3加入了随机斜率部分。 `Group-Level Effects`则是随机截距以及随机斜率参数的后验分布情况。
-【尝试解释一下为什么不加group的随机斜率？】
-至此我们已经完成了线性混合效应模型的建构。需要注意的是，在线性混合模型中，一般来说我们需要对具有异质性的因素设置随机效应，比如被试。除此之外
+`Population-Level Effects`是`model_3`的固定效应部分，解释与model_1相似，值得注意的是，`sample_prior ="yes"`，表示需要从先验中进行取样。与model_2不同，model_3加入了随机斜率部分。 `Group-Level Effects`则是随机截距以及随机斜率参数的后验分布情况。
+至此我们已经完成了线性混合效应模型的建构。需要注意的是，在线性混合模型中，一般来说我们需要对具有异质性的因素设置随机效应，比如被试。而新手在使用时常常可能会将组别纳入随机效应因素之中。需要注意的是，如果组别过小（<10）,那么自由度便会过小，以致不能做出稳健的估计。这时的组别是不适合作为随机因素的。
 
 # 先验的设置
 
-在上面建立的线性混合效应模型是基于无信息先验（英文？），但是合适的先验对于计算贝叶斯因子(Bayesian factor, BF)以及对实验结论非常重要。如果采用了无信息先验，那么很容易造成先验的不恰当。在不恰当的先验下，不能很好地估计一般和个别的影响（general and individual effects）(Veenman等, 2022)。而如何设置一个合适的先验分布对于初学者来说却并不容易。先验分布是模型参数的预先设置的分布形态，它赋予了模型参数在数据分析之前相对合理性的信息，然后用实际数据的信息更新先验分布，以获得模型参数的后验分布。
+在上面建立的线性混合效应模型是基于无信息先验（Noninformative prior），但是合适的先验对于计算贝叶斯因子(Bayesian factor, BF)以及对实验结论非常重要。如果采用了无信息先验，那么很容易造成先验的不恰当。在不恰当的先验下，不能很好地估计一般和个别的影响（general and individual effects）(Veenman等, 2022)。而如何设置一个合适的先验分布对于初学者来说却并不容易。先验分布是模型参数的预先设置的分布形态，它赋予了模型参数在数据分析之前相对合理性的信息，然后用实际数据的信息更新先验分布，以获得模型参数的后验分布。
 在我们建立的线性混合效应模型中，需要设置固定截距$β_{(Intercept)}$，固定斜率$β_{(group)}$ )，固定斜率 $β_{(type)}$以及误差项ϵ，随机斜率$sd_{(type)}$，随机截距$sd_{(intecept)}$的先验分布。在设置先验分布时，我们需要确定参数的先验分布的大致形状，常见的分布有二项分布(Binomial distribution)、正态分布(Normal distribution)、泊松分布(Poisson distribution)等。而先验分布的大致分布可以利用先验知识进行获取。具体方法可以参考(Sarma & Kay, 2020)。在这个例子中，我们预设参数是符合正态分布的，接着需要确定正态分布的平均数以及方差等超参数。具体见下方代码。
 ```{r}
 ## 定义先验分布
@@ -211,7 +234,7 @@ pp_check(model_predict, type = "stat", stat = "max")
 pp_check(model_predict, type = "stat", stat = "mean")
 ```
 
-从图1可知，先验分布是不恰当的。如果觉得与实际数据的分布相差还是很大，可以再次调整预设的先验分布的超参数，再查看目前先验预测的分布是否符合设想的参数分布，如果不合适可调整至合适的参数为止。接下来我们调整一下先验分布，使其与实际数据分布情况相似。
+从图可知，先验分布是不恰当的。如果觉得与实际数据的分布相差还是很大，可以再次调整预设的先验分布的超参数，再查看目前先验预测的分布是否符合设想的参数分布，如果不合适可调整至合适的参数为止。接下来我们调整一下先验分布，使其与实际数据分布情况相似。
 
 ```{r}
 ## 定义先验分布
@@ -230,9 +253,9 @@ model_predict_2 <- brm(LPP ~ group * type + (1 + type | subj),
                iter = 5000,
                sample_prior ="only",
                prior=prior_2)
-pp_check(model_predict, type = "stat", stat = "min")
-pp_check(model_predict, type = "stat", stat = "max")
-pp_check(model_predict, type = "stat", stat = "mean")
+pp_check(model_predict_2, type = "stat", stat = "min")
+pp_check(model_predict_2, type = "stat", stat = "max")
+pp_check(model_predict_2, type = "stat", stat = "mean")
 ```
 
 从图可知，prior_2先验分布设置相对来说是恰当的。当设置合适先验之后，我们将合适的先验分布放置上述建立的先行混合模型之中，然后再进行模型的后验分布估计，具体详见下方代码。
