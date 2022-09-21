@@ -68,7 +68,7 @@ u1s <- 2    # 被试的随机斜率 (图片类型)
 sigma <- 4
 ```
 
-```{r, results='hide'}
+```{r, results='hide', cache=T}
 # 根据假定的实验设计和参数来生成模拟数据：
 #生成假定实验的条件的数据矩阵
 df_simu <- add_random(subj = subj_n) %>%
@@ -104,6 +104,13 @@ contrasts(df_simu$group) <- MASS::contr.sdif(2)
 contrasts(df_simu$type) <- MASS::contr.sdif(2)
 
 head(df_simu, 5)#查看数据结构
+bruceR::print_table(df_simu[1:5,],digits = 2)
+```
+
+```{r}
+apa_barplot(
+  df_simu,id="subj",factors = c("group","type"),dv="LPP",
+  reference = -5, args_legend = list(x=0,y=12))
 ```
 
 
@@ -128,13 +135,15 @@ model_1 <- brm(LPP ~ group * type,
                cores = 4,
                chains = 4,
                warmup = 2000,
+               file = "model_1",
                iter = 5000)
 ```
 在以上部分代码中，`LPP`是因变量，即LPP的波幅，`group * type`表示`group`和`type`这两个自变量以及他们的交互作用  `df_simu`表示数据集。【这里先不改，需要看一下在前面是否会讲MCM以及这些概念】`cores`当并行执行链时使用的核数，默认为1。`chains` 代表马尔可夫链的数量(默认为4)。`iter`参数指的是用于马尔可夫链蒙特卡罗（Markov Chain Monte Carlo , MCMC）算法的总迭代次数。`warmup`参数指定在过程开始时运行的迭代次数来校准MCMC，以便最后只保留`iter - warmup`迭代来近似后端分布的形状。如果想要了解更多关于brm函数参数设定问题可以见(McElreath, 2016)。
 
 `summary()`可以帮助我们展示模型拟合后的参数情况。以下内容是model_1的结果。
 ```{r}
-summary(model_1)#可以查看参数情况
+summary(model_1)
+
 ```
 
 `Population-Level Effects`展示了固定效应参数的结果。其中，`Intercept` 是模型的固定截距，表示所有被试的平均LPP波幅。`group2M1`表示在平均图片类型的效应之后，健康对照组的LPP波幅减去抑郁症组LPP波幅的差值，即组别的主效应。与此类似，`type2M1`是在平均组别的效应之后，积极图片诱发的LPP波幅减去消极图片诱发的LPP波幅的差值，即图片类型的主效应。`group2M1:type2M1`表示差的差，即（$(LPP_{健康对照组,积极图片}-LPP_{健康对照组,消极图片})-(LPP_{抑郁症组,积极图片}-LPP_{抑郁症组,消极图片})$，也就是组别和图片类型交互作用。需要注意的是，对这些效应的解释是建立在使用`MASS::contr.sdif()`或类似的编码的基础之上。如果使用不同的编码，这些效应的解释也会相应的有所不同(Schad等，2020)。此外，`Estimate`表示参数的后验抽样的均值，`Est.Error`表示后验样本的标准误。`l-95% CI`和`u-95% CI`表示参数的95%可信区间。`sigma`表示残差项的后验分布参数。 `Rhat`代表参数的收敛情况。`Rhat`应该尽量接近于1，表示模型的收敛情况较好。但如果`Rhat`>1.01则说明模型的收敛情况并不理想。另外也可以使用`effectsize`工具包的`interpret_rhat`函数判断模型的收敛情况。如果输出是“converge”，则说明模型是收敛。在使用这个函数之前需要借助`bayestestR`包的`diagnostic_posterior`函数对model_1进行诊断。
@@ -167,6 +176,7 @@ model_2 <- brm(LPP ~ group * type + (1 |subj),
                cores = 4,
                chains = 4,
                warmup =1000,
+               file = "model_2",
                iter = 5000)
 ```
 
@@ -189,6 +199,7 @@ model_3 <- brm(LPP ~ group * type + (1 + type | subj),
                chains = 4,
                warmup =1000,
                iter = 5000,
+               file = "model_3",
                sample_prior ="yes")
 ```
 
@@ -239,6 +250,7 @@ model_ppc <- brm(LPP ~ group * type + (1 + type | subj),
                warmup =1000,
                iter = 5000,
                sample_prior ="only",
+               file = "model_ppc",
                prior=prior)
 pp_check(model_predict, type = "stat", stat = "min")
 pp_check(model_predict, type = "stat", stat = "max")
@@ -279,6 +291,7 @@ model_4 <- brm(LPP ~ group * type + (1 + type | subj),
                warmup =1000,
                iter = 5000,
                sample_prior ="yes",
+               file = "model_4",
                prior=prior_2)
 summary(model_4)
 ```
