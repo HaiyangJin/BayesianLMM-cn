@@ -52,7 +52,7 @@ sigma <- 4
 ```{r Table_1,results='hide'}
 if (!require(papaja)) {library(papaja)}
 if (!require(tibble)) {library(tibble)}
-para<-t(as.data.frame(c(60,2.5,4.2,4.5,2.4,2,2,4)))
+para<-t(as.data.frame(c(60,2.5,0.1,4.5,2.4,2,2,4)))
 rownames(para) <- c("参数值")
 colnames(para) <- c("subj_n","b0", "b1", "b2", "b3","u0s","u1s","sigma")
 apa_table(
@@ -107,6 +107,7 @@ head(df_simu, 5)#查看数据结构
 # 数据分析
 
 接下来，我们将借助R的`brms`工具包 (Bürkner, 2017b)构贝叶斯线性混合效应模型以分析该假想实验的模拟数据。`brms`工具包是目前最流行的贝叶斯数据分析工具之一(Bürkner, 2017a, 2017b; Ladislas等, 2019; Vasishth等, 2018)。在进行数据分析之前，我们需要对数据(`df_simu`)中的称名(自)变量(nominal factors)进行编码(contrast coding)。这里我们使用逐次差分对比编码（Successive Differences Contrast Coding）(`MASS::contr.sdif()`)对组别(`group`)和图片类型(`type`)这两个自变量进行编码。通过此设定，贝叶斯模型的输出结果更接近于大家所熟知的主效应和交互作用。对变量编码感兴趣的读者推荐阅读Schad等(2020)。
+
 ```{r}
 # 设定-0.5和0.5的编码
 contrasts(df_simu$group) <- MASS::contr.sdif(2)
@@ -134,12 +135,13 @@ model_1 <- brm(LPP ~ group * type,
 summary(model_1)#可以查看参数情况
 ```
 
-`Population-Level Effects`展示了固定效应参数的结果。其中，`Intercept` 是模型的固定截距，表示所有被试的平均LPP波幅。`group2M1`表示在平均图片类型的效应之后，健康对照组的LPP波幅减去抑郁症组LPP波幅的差值，即组别的主效应。与此类似，`type2M1`是在平均组别的效应之后，积极图片诱发的LPP波幅减去消极图片诱发的LPP波幅的差值，即图片类型的主效应。`group2M1:type2M1`表示差的差，即（$(LPP_{健康对照组,积极图片}-LPP_{健康对照组,消极图片})-(LPP_{抑郁症组,积极图片}-LPP_{抑郁症组,消极图片})$，也就是组别和图片类型交互作用。需要注意的是，对这些效应的解释是建立在使用`MASS::contr.sdif()`或类似的编码的基础之上。如果使用不同的编码，这些效应的解释也会相应的有所不同(Schad等，2020)。此外，`Estimate`表示参数的后验抽样的均值，`Est.Error`表示后验样本的标准误。`l-95% CI`和`u-95% CI`表示参数的95%可信区间。`sigma`表示残差项的后验分布参数。 `Rhat`代表参数的收敛情况。`Rhat`应该尽量接近于1，表示模型的收敛情况较好。但如果`Rhat`>1.01则说明模型的收敛情况并不理想。另外也可以使用`effectsize`工具包的`interpret_rhat`函数判断模型的收敛情况。如果输出是“converge”，则说明模型是收敛,不过在使用这个函数之前需要借助`bayestestR`包的`diagnostic_posterior`函数对model_1进行诊断，具体的代码可以见下方。
+`Population-Level Effects`展示了固定效应参数的结果。其中，`Intercept` 是模型的固定截距，表示所有被试的平均LPP波幅。`group2M1`表示在平均图片类型的效应之后，健康对照组的LPP波幅减去抑郁症组LPP波幅的差值，即组别的主效应。与此类似，`type2M1`是在平均组别的效应之后，积极图片诱发的LPP波幅减去消极图片诱发的LPP波幅的差值，即图片类型的主效应。`group2M1:type2M1`表示差的差，即（$(LPP_{健康对照组,积极图片}-LPP_{健康对照组,消极图片})-(LPP_{抑郁症组,积极图片}-LPP_{抑郁症组,消极图片})$，也就是组别和图片类型交互作用。需要注意的是，对这些效应的解释是建立在使用`MASS::contr.sdif()`或类似的编码的基础之上。如果使用不同的编码，这些效应的解释也会相应的有所不同(Schad等，2020)。此外，`Estimate`表示参数的后验抽样的均值，`Est.Error`表示后验样本的标准误。`l-95% CI`和`u-95% CI`表示参数的95%可信区间。`sigma`表示残差项的后验分布参数。 `Rhat`代表参数的收敛情况。`Rhat`应该尽量接近于1，表示模型的收敛情况较好。但如果`Rhat`>1.01则说明模型的收敛情况并不理想。有效样本量(effective sample size，ESS)反应了每个MCMC链从后验分布中采样到的有效且独立的样本数量。ESS越高表明能用来有效估计后验分布的样本数量越多，因此对后验分布的估计也越准确。在`brms`中提供了 `Bulk-ESS`和`Tail-ESS`反应ESS的质量。`Bulk-ESS`指的是基于等级归一化后抽取的有效样本量，反映了对所估计平均数和中位数的采样效率。通常建议ESS是MCMC链数的100倍及其以上，例如，当运行四条MCMC链时，所需的Bulk-ESS至少为400。`Tail-ESS`指有效样本量（ESS）在百分位0.05和0.95的最小值，可以用于诊断MCMC链由于不同尺度和尾部缓慢混合而产生的问题。如果MCMC对后验分布的采样存在问题，通常可以通过较少数量的`Bulk-ESS`和`Tail-ESS`以及较大的`Rhat`进行诊断。另外可以使用`effectsize`工具包的`interpret_rhat`函数判断模型的收敛情况。如果输出是“converge”，则说明模型是收敛;也可以用`interpret_ess`函数判断有效样本量是否充足，如果输出是“sufficient”，则说明有效样本量是充足的。不过在使用这个函数之前需要借助`bayestestR`包的`diagnostic_posterior`函数对model_1进行诊断，具体的代码可以见下方。
 
 ```{r}
 if (!require(bayestestR)) {library(bayestestR)}
 post_diag<- diagnostic_posterior(model_1)#
 effectsize::interpret_rhat(post_diag$Rhat)
+effectsize::interpret_ess(post_diag$ESS)
 ```
 
 
@@ -156,7 +158,7 @@ plot(model_1)  #查看每个参数的分布和抽样情况
 
 ## 添加随机效应 
 
-在只有固定效应的模型中，我们预设所有的被试的平均LPP的波幅，以及各个条件对每个被试LPP的影响都是一样的。但在实际情况中，每个被试的平均LPP的波幅更可能各不相同，并且被个被试的LPP受到各个条件的影响也更可能是存在差异的。为了考虑这些方面，我们需要在模型中设置随机效应。随机效应项主要包含随机截距和随机斜率。我们首先在只有固定效应的模型基础上，增加基于被试（by-subject）的随机截距， 即`+ (1 | subj)`。
+在只有固定效应的模型中，我们预设所有的被试的平均LPP的波幅，以及各个条件对每个被试LPP的影响都是一样的。但在实际情况中，每个被试的平均LPP的波幅可能各不相同，并且被个被试的LPP受到各个条件的影响也更可能是存在差异的。为了考虑这些方面，我们需要在模型中设置随机效应。随机效应项主要包含随机截距和随机斜率。我们首先在只有固定效应的模型基础上，增加基于被试（by-subject）的随机截距， 即`+ (1 | subj)`。其中subj为被试编号代表不同的被试，1为随机截距，代表不同被试中LPP的平均表现，对应公式2中的$\beta_{i}$。
 
 ```{r, results = "hide"}
 model_2 <- brm(LPP ~ group * type + (1 |subj), 
@@ -177,7 +179,7 @@ plot(model_2)   #查看每个参数的分布和抽样情况
 
 `Population-Level Effects`是`model_2`的固定效应部分，解释与`model_1`类似。与`model_1`不同，`model_2`加入了随机截距部分（即`+ (1 | subj)`）。 `Group-Level Effects`中的`sd(Intercept)`是随机截距标准差（standard deviation）的后验分布情况。当我们使用逐次差分对比编码时，该随机截距的标准差反映了各个被试LPP不同条件下平均波幅的离散程度。
 
-虽然`model_2`考虑了被试不同的平均LPP波幅，但它仍然预设每个被试受到各个条件（例如图片类型）的影响是相同的。但每个被试的LPP波幅受到图片类型的影响更可能是不同的。因此，我们需要设置随机斜率来考虑被试LPP波幅受到图片类型的不同影响，即在`model_2`模型的基础之上增加随机斜率,即`(1 + type | subj)`:
+虽然`model_2`考虑了被试不同的平均LPP波幅，但它仍然预设每个被试受到各个条件（例如图片类型）的影响是相同的。但每个被试的LPP波幅受到图片类型的影响更可能是不同的。因此，我们需要设置随机斜率来考虑被试LPP波幅受到图片类型的不同影响，即在`model_2`模型的基础之上增加随机斜率,即`(1 + type | subj)`，其中subj为被试编号代表不同的被试，1为随机截距，type为图片类型的随机斜率，对应公式3中的$\gamma_{i}$:
 
 ```{r}
 model_3 <- brm(LPP ~ group * type + (1 + type | subj), 
@@ -198,7 +200,8 @@ plot(model_3, variable = "^b", regex = TRUE) #查看固定效应部分的参数�
 ```
 
 `Population-Level Effects`是`model_3`的固定效应部分，解释与model_1相似，值得注意的是，`sample_prior ="yes"`，表示需要从先验中进行取样。与model_2不同，model_3加入了随机斜率部分。 `Group-Level Effects`则是随机截距以及随机斜率参数的后验分布情况。
-至此我们已经完成了线性混合效应模型的建构。需要注意的是，在线性混合模型中，一般来说我们需要对具有异质性的因素设置随机效应，比如被试。而新手在使用时常常可能会将组别纳入随机效应因素之中。而如果组别过小（<10）,那么自由度便会过小，以致不能做出稳健的估计。所以在本例中组别是不适合作为随机效应因素的[引用]。
+
+从仅包含固定效应的线性模型到加入随机截距与随机斜率的混合效应模型，我们已经大致了解贝叶斯混合效应模型的基本概念与模型拟合方法。需要注意的是，在设定混合效应模型的过程中，我们一般将具有异质性的因素设置为随机效应，比如被试。然而常见的问题可能在于是否可以将组别作为随机效应纳入模型中。一般来说，当某个因素的水平过少（<10），不建议作为随机效应加入模型中，比如本研究中的组别因素只有两个水平，而被试因素有60个水平。其中一方面的原因在于因素的水平过少会使得自由度过小，以致于难以得到稳健的估计。
 
 # 先验的设置
 
@@ -215,8 +218,8 @@ get_prior(LPP ~ group * type + (1 + type | subj),
 prior_01 = c(
   prior(normal(0, 10), class = Intercept),
   prior(normal(0, 10), class = b),
-  prior(normal(0, 10), class = sigma),
-  prior(normal(0, 10), class = sd),
+  prior(normal(0, 0.1), class = sigma),
+  prior(normal(0, 0.1), class = sd),
   prior(lkj(2), class = cor)
 )
 ```
@@ -233,24 +236,19 @@ model_ppc_01 <- brm(LPP ~ group * type + (1 + type | subj),
                iter = 5000,
                sample_prior ="only",
                prior=prior_01)
-pp_check(model_ppc_01, type = "stat", stat = "min",prefix = "ppd")
-pp_check(model_ppc_01, type = "stat", stat = "max",prefix = "ppd")
-pp_check(model_ppc_01, type = "stat", stat = "mean",prefix = "ppd")
+pp_check(model_ppc_01, type = "stat", stat = "min")
+pp_check(model_ppc_01, type = "stat", stat = "max")
+pp_check(model_ppc_01, type = "stat", stat = "mean")
 ```
-图@\ref(fig:plot_model_1)描述了prior_01的最大值、最小值、平均数的先验预测分布。从以上图可以知道先验预测分布的平均数大部分的值落在了[-200，200],而据以往研究所知，LPP的波幅大部分是处于[-20,20]，当然研究之间存在差异，但是一般波幅都不会超过60，再往上所得到的幅值便可能是噪音了。所以，对于prior_01预测的因变量的值并不是特别理想。另外，我们也可以通过以下代码检验先验预测分布和观测数据的分布之间的拟合情况。
-
-```{r ppc_den_01,fig.cap = "y代表观测数据的分布，y(rep)代表的是预测数据的分布"}
-pp_check(model_ppc_01, ndraws = 1000, type = "dens_overlay") #先验预测分布和观测数据的分布
-```
-从图@\ref(fig:ppc_den_01)可知观测数据分布和预测数据的分布拟合情况并不是特别好。从而可检验prior_01的设置并不是特别合理。为了找到一个合适的先验，我们再试着将先验设置成均值为0，标准差为0.5的比较窄的正态分布，其大部分数值落在-1和1之间。
+图@\ref(fig:plot_model_1)描述了prior_01的最大值、最小值、平均数的先验预测分布。从以上图可以知道先验预测分布的平均数大部分的值落在了[-40，40],而据以往研究所知，LPP的波幅大部分是处于[-20,20]，当然研究之间存在差异，但是其波幅都不会超过30。所以，对于prior_01预测的因变量的值的分布并不是特别理想。另外，我们也可以通过以下代码检验先验预测分布和观测数据的分布之间的拟合情况。为了找到一个合适的先验，我们再试着将先验设置成均值为0，标准差为0.5的比较窄的正态分布，其大部分数值落在-1和1之间。
 
 ```{r,model_ppc_02,}
 ##
 prior_02 = c(
   prior(normal(0, 0.5), class = Intercept),
   prior(normal(0, 0.5), class = b),
-  prior(normal(0, 0.5), class = sigma),
-  prior(normal(0, 0.5), class = sd),
+  prior(normal(0, 0.1), class = sigma),
+  prior(normal(0, 0.1), class = sd),
   prior(lkj(2), class = cor)
 )
 
@@ -272,8 +270,8 @@ pp_check(model_ppc_02, type = "stat", stat = "mean")
 prior_03 = c(
   prior(normal(0, 5), class = Intercept),
   prior(normal(0, 5), class = b),
-  prior(normal(0, 5), class = sigma),
-  prior(normal(0, 5), class = sd),
+  prior(normal(0, 0.1), class = sigma),
+  prior(normal(0, 0.1), class = sd),
   prior(lkj(2), class = cor)
 )
 model_ppc_03<- brm(LPP ~ group * type + (1 + type | subj), 
@@ -288,11 +286,7 @@ pp_check(model_ppc_03, type = "stat", stat = "min")
 pp_check(model_ppc_03, type = "stat", stat = "max")
 pp_check(model_ppc_03, type = "stat", stat = "mean")
 ```
-从图@\ref(fig:model_ppc_03)可知，prior_03的先验预测分布最大值、最小值、平均数的分布可以很好地捕捉观测数据的最大值、最小值和平均数。而且其分布的数值大部分落在[-60,60]之间，这符合脑电研究中幅值的合理分布。当然为了更好地观测到先验预测分布和观测数据分布之间的拟合情况，我们也可以使用以下代码进行查验。
-```{r pp_check_03}
-pp_check(model_ppc_03, ndraws = 100, type = "dens_overlay")
-```
-从图@\ref(fig:pp_check_03)可知，prior_03先验预测分布和观察数据的分布是较为拟合的。当然，为了可以进一步验证模型的合理性，我们也可以采用后验预测分布（Posterior predictive distribution）。详细可以见下方的代码。
+从图@\ref(fig:model_ppc_03)可知，prior_03的先验预测最大值、最小值、平均数的分布可以很好地捕捉观测数据的最大值、最小值和平均数。而且其分布的数值大部分落在[-20,20]之间，这符合脑电研究中幅值的合理分布。当然，为了可以进一步验证模型的合理性，我们也可以采用后验预测分布（Posterior predictive distribution）。详细可以见下方的代码。
 ```{r}
 model_ppc_04<- brm(LPP ~ group * type + (1 + type | subj), 
                data = df_simu,
@@ -325,9 +319,9 @@ summary(model_4)
 
 # 组间差异以及组内差异的比较
 
-实验中，研究者通常感兴趣的是各条件间、各组之间的差异。在贝叶斯线性混合效应模型中，在每一次迭代（iteration）中，我们都会得到每一个参数的一个样本（samples）。这些不同迭代中的的样本在一起组成了 即是模型所得到的感兴趣效应的差异的后验分布。
-
-在心理学研究中，有不少的贝叶斯统计的支持者主张使用贝叶斯因子进行假设检验 [@rouderBayesianInferencePsychology2018]。在以下的代码中我们将采用直接计算贝叶斯因子对组间差异以及组内差异进行检验。使用`brms`的`hypothesis`函数便可直接进行假设检验，并从中提取出贝叶斯因子。
+虽然混合效应模型可以考虑被试层面的各类异质性，但在实际的数据分析中，研究者通常感兴趣的是各实验条件之间的差异，比如本研究中的组间因素组别和被试内因素图片类型对LPP的影响。在贝叶斯分析框架中，检验实验效应的差异反而更加轻松，我们可以通过参数的后验分布直接对不同的假设进行检验，避免了频率学派多重比较的问题【引用】。具体来说，不同于频率学派直接通过统计模型对研究假设进行检验（比如方差分析模型），在贝叶斯框架中，研究假设通过模型建构的方式作为模型参数纳入模型中，比如对于被试存在个体差异的研究假设对应了混合效应模型中的随机效应。而假设检验的过程是对于参数后验分布进行统计推断的过程，主要是通过参数后验分布的可信区间判断是否包含特定值进行推断（称为贝叶斯点估计假设检验，Bayesian point-valued hypotheses test，(Kruschke, 2015)）。需要注意的是，在贝叶斯框架中，研究假设是否为真（比如参数是否包含0）是通过概率来反应的，而不是我们熟悉的p值。因此，基于贝叶斯的假设检验不会强调是否接受或者拒接一个检验，而是通过参数出现的概率反映假设成立的可能性，因此贝叶斯假设检验可以用于检验零假设是否成立。
+在本研究中，为了进一步做出类似于频率学派假设检验的统计推断，我们通过贝叶斯因子判断差异是否显著，即通过贝叶斯因子（可以理解为频率学派中的p值）接受或者拒绝一个假设 (Rouder et al., 2018)（详见本期顾昕老师文章）。
+在实际的操作中，brms提供的hypothesis()函数可以从贝叶斯混合效应模型中提取出贝叶斯因子，以下的代码演示了如何从贝叶斯混合效应模型中提取贝叶斯因子并且通过贝叶斯因子对模拟数据中的组间以及组内差异进行检验。需要注意的是，计算贝叶斯因子需要对先验分布进行采样，model_4中的设定的参数sample_prior ="yes"允许贝叶斯混合效应模型在拟合的时候同时对对先验分布进行采样，这使得后续可以轻松的计算贝叶斯因子。 
 
 ```{r}
 #组内比较
