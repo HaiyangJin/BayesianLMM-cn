@@ -1,19 +1,16 @@
 ---
 title: "数据模拟代码"
-author: "Xiujuan Wen, Panwan Ke, Haiyang Jin"
+author: 
+  - Xiujuan Wen
+  - Wanke Pan 
+  - Haiyang Jin
 date: '2022-07-25'
+documentclass: ctexart
 output:
-  word_document:
-    toc: yes
-    toc_depth: '4'
-  html_document:
-    number_sections: yes
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
+  rticles::ctex:
+    fig_caption: yes
+    # number_sections: yes
+    # toc: yes
 ---
 ```{r setup, results='hide', include = FALSE}
 #首先加载需要使用的R包
@@ -84,3 +81,4 @@ df_simu <- df_simu %>%
 ```{r}
 #查看生成的数据
 head(df_simu,10) 
+```
