@@ -14,14 +14,9 @@ output:
 ---
 ```{r setup, results='hide', include = FALSE}
 #首先加载需要使用的R包
-library("papaja")
+if (!require(papaja)) {library(papaja)}
 if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
-if (!require(brms)) {library(brms)}
-if (!require(bayesplot)) {library(bayesplot)}
-if (!require(emmeans)) {library(emmeans)}
-if (!require(tidybayes)) {library(tidybayes)}
-if (!require(bayestestR)) {library(bayestestR)}
 set.seed(2022)
 ```
 
