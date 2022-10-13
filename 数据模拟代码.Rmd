@@ -1,10 +1,10 @@
 ---
 title: "数据模拟代码"
 author: 
-  - Xiujuan Wen
-  - Wanke Pan 
-  - Haiyang Jin
-date: '2022-07-25'
+  - 温秀娟
+  - 潘晚坷 
+  - 金海洋
+date: '2022-10-17'
 documentclass: ctexart
 output:
   rticles::ctex:
@@ -12,7 +12,7 @@ output:
     # number_sections: yes
     # toc: yes
 ---
-```{r setup, results='hide', include = FALSE}
+```{r setup}
 #首先加载需要使用的R包
 if (!require(papaja)) {library(papaja)}
 if (!require(tidyverse)) {library(tidyverse)}
@@ -20,7 +20,7 @@ if (!require(faux)) {library(faux)}
 set.seed(2022)
 ```
 
-在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，期间我们收集了他们的脑电数据。因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别`group`：抑郁症组`depression`、对照组 `control` ) × 2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，其中组别为被试间因素，图片类型为被试内因素。该假想实验的数据是使用DeBruine (2021)的faux工具包生成，下面是模拟这个实验所预设的参数。
+在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，期间我们采集了他们的脑电数据。因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别`group`：抑郁症组`depression`、对照组 `control` ) × 2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，其中组别为被试间因素，图片类型为被试内因素。该假想实验的数据是使用DeBruine (2021)的faux工具包生成，下面是模拟这个实验所预设的参数。
 
 ```{r}
 subj_n <- 80   # 总被试量：抑郁患者30人，健康对照组被试30人
