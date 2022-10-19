@@ -1,0 +1,86 @@
+"0","# 加载需要使用的R包"
+"0","library(""papaja"")"
+"0","if (!require(tidyverse)) {"
+"0","  library(tidyverse)"
+"0","}"
+"0","if (!require(faux)) {"
+"0","  library(faux)"
+"0","}"
+"0","if (!require(brms)) {"
+"0","  library(brms)"
+"0","}"
+"2","载入需要的程辑包：brms
+"
+"2","载入需要的程辑包：Rcpp
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"2","Loading 'brms' package (version 2.17.0). Useful instructions
+can be found by typing help('brms'). A more detailed introduction
+to the package is available through vignette('brms_overview').
+"
+"2","
+载入程辑包：‘brms’
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    ar
+
+"
+"0","if (!require(bayesplot)) {"
+"0","  library(bayesplot)"
+"0","}"
+"2","载入需要的程辑包：bayesplot
+"
+"2","This is bayesplot version 1.9.0
+"
+"2","- Online documentation and vignettes at mc-stan.org/bayesplot
+"
+"2","- bayesplot theme set to bayesplot::theme_default()
+"
+"2","   * Does _not_ affect other ggplot2 plots
+"
+"2","   * See ?bayesplot_theme_set for details on theme setting
+"
+"0","if (!require(emmeans)) {"
+"0","  library(emmeans)"
+"0","}"
+"2","载入需要的程辑包：emmeans
+"
+"0","if (!require(tidybayes)) {"
+"0","  library(tidybayes)"
+"0","}"
+"2","载入需要的程辑包：tidybayes
+"
+"2","
+载入程辑包：‘tidybayes’
+
+"
+"2","The following objects are masked from ‘package:brms’:
+
+    dstudent_t, pstudent_t, qstudent_t, rstudent_t
+
+"
+"0","if (!require(bayestestR)) {"
+"0","  library(bayestestR)"
+"0","}"
+"2","载入需要的程辑包：bayestestR
+"
+"2","
+载入程辑包：‘bayestestR’
+
+"
+"2","The following object is masked from ‘package:tidybayes’:
+
+    hdi
+
+"
+"2","The following object is masked from ‘package:papaja’:
+
+    ci
+
+"
+"0","set.seed(2022)"

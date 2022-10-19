@@ -1,0 +1,16 @@
+"0","model_4 <- brm("
+"0","  LPP ~ group * type + (1 + type | subj),"
+"0","  data = df_simu,"
+"0","  cores = 4,"
+"0","  chains = 4,"
+"0","  warmup = 1000,"
+"0","  iter = 5000,"
+"0","  sample_prior = ""yes"","
+"0","  prior = prior_02,"
+"0","  seed = 2022,"
+"0","  file = ""brm_fit/model_4.Rds"""
+"0",")"
+"2","Compiling Stan program...
+"
+"2","Start sampling
+"
