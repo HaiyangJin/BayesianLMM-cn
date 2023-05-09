@@ -1,6 +1,0 @@
-"0","df_simu <- df_simu %>%"
-"0","  select(subj, group, type, LPP) # 去除冗余的信息"
-"0",""
-"0","# 设定-0.5和0.5的编码"
-"0","contrasts(df_simu$group) <- MASS::contr.sdif(2)"
-"0","contrasts(df_simu$type) <- MASS::contr.sdif(2)"

@@ -1,6 +1,0 @@
-"0","result <- hypothesis(model_4, ""group2M1:type2M1=0"")"
-"0","result$hypothesis$Evid.Ratio # 查看贝叶斯因子BF_01"
-"1","[1]"
-"1"," 11.74594"
-"1","
-"
