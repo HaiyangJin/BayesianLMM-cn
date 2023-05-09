@@ -1,7 +1,5 @@
 # the main word document
 *.docx
-!main.docx
-!main_20220820_HJ.docx
 
 # History files
 .Rhistory
@@ -60,4 +58,9 @@ docs/
 *.DS_Store
 
 # brmfit
-./brmfit/
+brm_fit
+
+*.tif
+*.tiff
+*.pdf
+*.doc

@@ -3,15 +3,7 @@ title: "simulation_BLMM"
 author: "Xiujuan Wen, Panwan Ke, Haiyang Jin"
 date: '2022-07-25'
 output:
-  word_document:
-    toc: yes
-    toc_depth: '4'
-  html_document:
-    number_sections: yes
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
-  pdf_document:
+  html_notebook:
     toc: yes
     toc_depth: '4'
 ---
@@ -39,66 +31,18 @@ if (!require(tidybayes)) {
 if (!require(bayestestR)) {
   library(bayestestR)
 }
+if (!require(patchwork)) {
+  library(patchwork)
+}
 set.seed(2022)
 ```
 
 # 应用示例
 
-我们借助一个假想的心理学实验展示如何使用贝叶斯混合效应模型分析数据。该假想实验的研究目的是探究抑郁症人群加工不同情绪刺激的神经基础。在该实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，期间我们采集了他们的脑电数据。我们所感兴趣的因变量是晚期正电位（late positive potentials，LPP）的波幅。简单来说，这是一个2（组别group：抑郁症组depression、对照组 control） × 2（图片类型type：积极positive、中性neutral）的混合实验设计，其中组别为被试间因素，图片类型为被试内因素。该假想实验的数据是使用DeBruine（2021）的faux工具包生成，具体代码如下。
-
-```{r,results='hide'}
-subj_n <- 80 # 总被试量：抑郁患者30人，健康对照组被试30人
-trial_n <- 30 # 每张图片呈现的次数
-
-# 固定效应
-b0 <- 0.5 # 截距 (所有条件的均值)
-b1 <- 6.5 # 图片类型的固定效应 (主效应)
-b2 <- 0.1 # 组别的固定效应 (主效应)
-b3 <- 0.1 # 图片类型与组别的交互作用
-
-# 随机效应
-u0s <- 2 # 被试的随机截距
-u1s <- 2 # 被试的随机斜率 (图片类型)
-
-# 误差项
-sigma <- 2
-```
-
 ```{r, results='hide'}
-# 根据假定的实验设计和参数来生成模拟数据：
-# 生成假定实验的条件的数据矩阵
-df_simu <- add_random(subj = subj_n) %>%
-  # 添加被试的组别信息（被试间）
-  add_between("subj", group = c("depression", "control")) %>%
-  # 添加图片类型的信息（被试内）
-  add_within("subj", type = c("netural", "positive")) %>%
-  # 每种图片呈现30次
-  add_random(trial = trial_n) %>%
-  # 图片类型的编码：中性=-0.5；正性=0.5
-  add_contrast("type", "anova", colnames = "type_code") %>%
-  # 被试组别的编码：抑郁症组=-0.5；控制组=0.5
-  add_contrast("group", "anova", colnames = "group_code") %>%
-  # 添加基于被试的随机截距和斜率 (图片类型)
-  add_ranef("subj", u0s = u0s, u1s = u1s, .cors = 0.5) %>%
-  # 添加观察值的误差项
-  add_ranef(sigma = sigma) %>%
-  # 最后根据设置的固定效应和随机效应参数值，生成因变量。
-  mutate(LPP = (b0 + u0s) + # 截距
-    (b1 + u1s) * type_code + # 图片材料的斜率
-    b2 * group_code + # 组别的斜率
-    b3 * type_code * group_code + # 交互作用
-    sigma) # 误差项
-
-head(df_simu, 10) # 查看生成的数据矩阵
-```
-
-```{r results='hide'}
-df_simu <- df_simu %>%
-  select(subj, group, type, LPP) # 去除冗余的信息
-
-# 设定-0.5和0.5的编码
-contrasts(df_simu$group) <- MASS::contr.sdif(2)
-contrasts(df_simu$type) <- MASS::contr.sdif(2)
+# 加载模拟数据
+# 具体数据模拟代码请参考，数据模拟代码.R
+load("simulated_data.rdata")
 ```
 
 ## 数据预处理
@@ -124,14 +68,17 @@ contrasts(df_simu$type) <- MASS::contr.sdif(2)
 
 ```{r}
 # 建立只有固定效应的模型
-model_1 <- brm(LPP ~ group * type,
+model_1 <- brm(
+  LPP ~ group * type,
   data = df_simu,
   chains = 4,
-  cores = 4,
   warmup = 1000,
   iter = 5000,
-  seed = 2022,
-  file = "brm_fit/model_1.Rds"
+  thin = 1,
+  cores = 4,
+  # 注意：正文中没有以下代码
+  seed = 2022,                  # 该参数的设置是为了读者能获得和正文相同的结果
+  file = "brm_fit/model_1.Rds"  # 设置该参数可以让读者保存运行的模型，避免重复计算
 )
 ```
 
@@ -146,7 +93,7 @@ summary(model_1) # 可以查看参数情况
 `group2M1:type2M1`是组别和图片类型交互作用，即($LPP_{(健康对照组,积极图片)}$-$LPP_{(健康对照组,中性图片)}$ )-($LPP_{(抑郁症组,积极图片)}$-$LPP_{(抑郁症组,中性图片)}$ )。
 在输出的结果中，`Estimate`表示参数的后验分布的均值，`Est.Error`表示后验分布的标准差（standard deviation）。`l-95% CI`和`u-95% CI`表示参数的95%可信区间的两个边界，例如`group2M1`的95%的可信区间是[0.11，0.46]。`Rhat`表示不同链条采样的融合程度。`Rhat`越接近于1，表示不同链条采样融合的更好，即模型的收敛情况更好。如果`Rhat`大于1.01则说明模型的收敛情况并不理想。此时，研究者不应该使用获得的后验分布进行进一步的分析，而应该检查模型设定是否合理等。`ESS`为有效样本量 (effective sample size) ，是对MCMC算法采样到的有效且独立的样本数量的估计。`ESS`越高表明能用来有效估计后验分布的样本数量越大。通常建议`Bulk-ESS`是MCMC链数量的100倍及其以上。例如，当运行4条MCMC链时，所需的`Bulk-ESS`至少为400。`Tail-ESS`表示后验分布两端的有效样本量。通常情况下，过小的`Bulk-ESS`和`Tail-ESS`会伴随着过大的`Rhat`。合理的设定模型和先验分布（见3.5部分）一般可以解决大部分`Rhat`过大的情况。此外，研究者还可以通过可视化的方式检查各条链的融合情况：
 
-```{r plot_model_1, dpi = 300, echo = FALSE, fig.pos = "H", fig.cap = " model_1的MCMC各条链抽样的轨迹图（又叫“毛毛虫”图）。x轴表示迭代数，y轴表示参数值。不同颜色的线表示不同的链。"}
+```{r plot_model_1, dpi = 300}
 mcmc_trace(model_1, pars = c("b_Intercept", "b_group2M1", "b_type2M1", "b_group2M1:type2M1", "sigma"))
 ```
 
@@ -156,15 +103,18 @@ mcmc_trace(model_1, pars = c("b_Intercept", "b_group2M1", "b_type2M1", "b_group2
 
 如前所述，仅包含固定效应的模型（`model_1`）假定所有被试的平均脑电波幅都是相同的，即所有被试共享同一个截距值。但这种情况在现实中不太可能发生。更可能的情况是，每个被试的平均脑电波幅都各不相同。因此，我们需要在模型中增加随机截距来考虑被试在平均脑电波幅上的个体差异。具体来说，我们需要在`model_1`的基础上增加基于被试（by-subject）的随机截距（对应公式2中的$S_{(0,i)}$），即 `(1 | subj)`。其中`subj`为被试编号，`1`表示随机截距：
 
-```{r, results = "hide"}
-model_2 <- brm(LPP ~ group * type + (1 | subj),
+```{r}
+model_2 <- brm(
+  LPP ~ group * type + (1 | subj),
   data = df_simu,
-  cores = 4,
   chains = 4,
   warmup = 1000,
   iter = 5000,
-  seed = 2022,
-  file = "brm_fit/model_2.Rds"
+  thin = 1,
+  cores = 4,
+  # 注意：正文中没有以下代码
+  seed = 2022,                  # 该参数的设置是为了读者能获得和正文相同的结果
+  file = "brm_fit/model_2.Rds"  # 设置该参数可以让读者保存运行的模型，避免重复计算
 )
 ```
 
@@ -179,14 +129,17 @@ summary(model_2) # 查看参数情况
 虽然`model_2`考虑了不同被试平均LPP波幅的个体差异，但它仍然假定所有被试受到实验处理（即图片类型）的影响是相同的。然而在实际情况中，每个被试受到图片类型的影响更可能是不同的。因此，我们需要设置随机斜率考虑图片类型对不同被试的不同影响。具体来说，我们可以在`model_2`模型的基础之上加入随机斜率（对应公式3中的$S_{(δ,i)}$），即`(type | subj)`，其中`subj`为被试编号， `type`为图片类型的随机斜率。与此同时，我们也在模型中加入了随机截距与随机斜率间的相关:
 
 ```{r}
-model_3 <- brm(LPP ~ group * type + (1 + type | subj),
+model_3 <- brm(
+  LPP ~ group * type + (1 + type | subj), 
   data = df_simu,
-  cores = 4,
   chains = 4,
   warmup = 1000,
   iter = 5000,
-  seed = 2022,
-  file = "brm_fit/model_3.Rds"
+  thin = 1,
+  cores = 4,
+  # 注意：正文中没有以下代码
+  seed = 2022,                  # 该参数的设置是为了读者能获得和正文相同的结果
+  file = "brm_fit/model_3.Rds"  # 设置该参数可以让读者保存运行的模型，避免重复计算
 )
 ```
 
@@ -207,7 +160,8 @@ summary(model_3) # 查看参数情况
 先验分布是研究者以概率分布的形式描述自己关于特定研究问题的先验知识。它赋予了模型参数在观测到数据之前的相对合理性。这些先验信息与观测数据的信息相互整合成为模型参数的后验分布。作为设定先验分布的第一步，研究者需要知道自己可以对一个模型的哪些参数设置先验。这里可以借助`get_prior()`函数得到相应的信息：
 
 ```{r}
-get_prior(LPP ~ group * type + (1 + type | subj),
+get_prior(
+  LPP ~ group * type + (1 + type | subj),
   data = df_simu
 )
 ```
@@ -236,22 +190,29 @@ prior_01 <- c(
 model_ppc_01 <- brm(
   LPP ~ group * type + (1 + type | subj),
   data = df_simu,
-  cores = 4,
   chains = 4,
   warmup = 1000,
   iter = 5000,
-  sample_prior = "only",
+  thin = 1,
+  cores = 4,
   prior = prior_01,
-  seed = 2022
+  sample_prior = "only",
+  # 注意：正文中没有以下代码
+  seed = 2022                 # 该参数的设置是为了读者能获得和正文相同的结果
 )
 ```
 
 通过上述代码，我们可以获得16，000组（（5000-1000）*4）来自参数先验分布的抽样，每一组都包含模型的所有参数（比如固定截距，固定斜率，随机效应等）各一个。每一组的参数都可以使用数据集（`df_simu`）中的实验设计生成一套新的、仅基于先验分布的模拟观测数据。我们可以通过审查这些模拟生成的数据去判断先验设定是否合适。例如在一个以反应时为因变量的 stroop 实验中，如果那些由先验分布生成的模拟反应时大多数都长于预期（比如10s），这很可能说明模型某些参数先验的设定不太合理（比如截距数值太大或标准差过大）。幸运的是，上述复杂的过程可以借助`pp_check()`函数完成。 如前文所述，尽管我们无法根据先前研究设定精确的先验，但是我们拥有一定的先验知识，了解脑电事件相关电位的波幅通常在一定的范围之内。因此，我们计算16，000套由先验分布生成的模拟数据的最小值（min）、平均数（mean）和最大值（max），并检验他们的范围：
 
 ```{r,fig.cap="基于先验prior_01生成的16，000套模拟观测数据（y(rep)）的最小值、均值和最大值的分布。"}
-pp_check(model_ppc_01, type = "stat", stat = "min", prefix = "ppd")
-pp_check(model_ppc_01, type = "stat", stat = "max", prefix = "ppd")
-pp_check(model_ppc_01, type = "stat", stat = "mean", prefix = "ppd")
+a1 = pp_check(model_ppc_01, type = "stat", stat = "min", prefix = "ppd")
+a2 = pp_check(model_ppc_01, type = "stat", stat = "max", prefix = "ppd")
+a3 = pp_check(model_ppc_01, type = "stat", stat = "mean", prefix = "ppd")
+fig3_ppc = a1 + a2 + a3
+ggsave("fig3_ppc.tiff", fig3_ppc,
+       width = 10, height = 4, bg = "white",
+       dpi = 300, compression = "lzw")
+fig3_ppc
 ```
 
 结果显示，基于`prior_01`生成的每一套模拟观测数据的最小值大部分落在[-75, 0]，均值大部分落在[-25, 25]，而最大值大部分落在[0, 80]。根据我们有限的实验经验，试次水平的脑电波幅通常很少会超过-50（μV）或50（μV）（伪迹除外）。因此，我们可以适当的调整参数的先验分布以反映我们的先验知识，即减小参数先验分布的不确定性。故在第二次尝试中，我们将固定截距和固定斜率的先验设置成均值为0，标准差为5的正态分布：
@@ -265,22 +226,30 @@ prior_02 <- c(
   prior(normal(0, 5), class = sd),
   prior(lkj(2), class = cor)
 )
-model_ppc_02 <- brm(LPP ~ group * type + (1 + type | subj),
+model_ppc_02 <- brm(
+  LPP ~ group * type + (1 + type | subj),
   data = df_simu,
-  cores = 4,
   chains = 4,
   warmup = 1000,
   iter = 5000,
-  sample_prior = "only",
+  thin = 1,
+  cores = 4,
   prior = prior_02,
-  seed = 2022
+  sample_prior = "only",
+  # 注意：正文中没有以下代码
+  seed = 2022                 # 该参数的设置是为了读者能获得和正文相同的结果
 )
 ```
 
 ```{r,fig.cap="基于先验prior_02生成的每一套模拟观测数据（y(rep)）的最小值、均值和最大值的分布"}
-pp_check(model_ppc_02, type = "stat", stat = "min", prefix = "ppd")
-pp_check(model_ppc_02, type = "stat", stat = "max", prefix = "ppd")
-pp_check(model_ppc_02, type = "stat", stat = "mean", prefix = "ppd")
+a1 = pp_check(model_ppc_02, type = "stat", stat = "min", prefix = "ppd")
+a2 = pp_check(model_ppc_02, type = "stat", stat = "max", prefix = "ppd")
+a3 = pp_check(model_ppc_02, type = "stat", stat = "mean", prefix = "ppd")
+fig4_ppc = a1 + a2 + a3
+ggsave("fig4_ppc.tiff", fig4_ppc,
+       width = 10, height = 4, bg = "white",
+       dpi = 300, compression = "lzw")
+fig4_ppc
 ```
 
 经过同样的步骤，我们可以获得基于先验`prior_02`生成的16，000套模拟观测数据（`y(rep)`）的最小值、均值和最大值的分布（图 3）。结果显示这些模拟观测数据的最小值大部分落在[-60, 0]，均值大部分落在了[-10, 10]，最大值大部分落在[0, 60]。与`prior_01`的先验预测结果（图 2）相比，prior_02预测结果更多落在了[-50, 50]，能够相对更合理的描述我们的先验知识。
@@ -292,14 +261,16 @@ pp_check(model_ppc_02, type = "stat", stat = "mean", prefix = "ppd")
 model_4 <- brm(
   LPP ~ group * type + (1 + type | subj),
   data = df_simu,
-  cores = 4,
   chains = 4,
   warmup = 1000,
   iter = 5000,
-  sample_prior = "yes",
+  thin = 1,
+  cores = 4,
   prior = prior_02,
-  seed = 2022,
-  file = "brm_fit/model_4.Rds"
+  sample_prior = "yes",
+  # 注意：正文中没有以下代码
+  seed = 2022,                  # 该参数的设置是为了读者能获得和正文相同的结果
+  file = "brm_fit/model_4.Rds"  # 设置该参数可以让读者保存运行的模型，避免重复计算
 )
 ```
 
@@ -342,5 +313,6 @@ result <- hypothesis(model_4, "group2M1:type2M1=0")
 result$hypothesis$Evid.Ratio # 查看贝叶斯因子BF_01
 ```
 
-"`group2M1:type2M1=0`"表示组别（`group`）和图片类型（`type`）交互作用的零假设，即抑郁组中积极图片和中性图片LPP波幅差异与对照组中积极图片和中性图片LPP波幅差异的差异（即差的差）为0。结果显示，$BF_{01}$=11.75>10，这表明存在较强的证据支持交互作用的零假设。
+"`group2M1:type2M1=0`"表示组别（`group`）和图片类型（`type`）交互作用的零假设，即抑郁组中积极图片和中性图片LPP波幅差异与对照组中积极图片和中性图片LPP波幅差异的差异（即差的差）为0。结果显示，$BF_{01}$=11.90>10，这表明存在较强的证据支持交互作用的零假设。
+
 
