@@ -1,0 +1,7 @@
+.RData
+.Rhistory
+*.Rproj
+.Rproj.user
+brm_fit
+*.doc*
+*tiff
