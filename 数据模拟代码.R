@@ -1,47 +1,42 @@
----
-title: "数据模拟代码"
-author: 
-  - 温秀娟
-  - 潘晚坷 
-  - 金海洋
-date: '2022-10-17'
-documentclass: ctexart
-output:
-  rticles::ctex:
-    fig_caption: yes
-    # number_sections: yes
-    # toc: yes
----
-```{r setup}
+# 该代码用于展示如何模拟虚拟数据
+# 作者：温秀娟，潘晚坷，金海洋
+# https://github.com/HaiyangJin/BayesianLMM-cn
+  
 #首先加载需要使用的R包
 if (!require(papaja)) {library(papaja)}
 if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
 set.seed(2022)
-```
 
-在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，期间我们采集了他们的脑电数据。因变量是晚期正电位（late positive potentials, LPP）的波幅。简单来说，这是一个2 (组别`group`：抑郁症组`depression`、对照组 `control` ) × 2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，其中组别为被试间因素，图片类型为被试内因素。该假想实验的数据是使用DeBruine (2021)的faux工具包生成，下面是模拟这个实验所预设的参数。
 
-```{r}
+# 我们借助一个假想的心理学实验展示如何模拟虚拟数据。
+# 在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，
+# 期间我们采集了他们的脑电数据。
+# 因变量是晚期正电位（late positive potentials, LPP）的波幅。
+# 简单来说，这是一个
+# 2 (组别`group`：抑郁症组`depression`、对照组 `control` ) × 
+# 2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，
+# 其中组别为被试间因素，图片类型为被试内因素。
+# 该假想实验的数据是使用DeBruine (2021)的faux工具包生成，
+# 下面是模拟这个实验所预设的参数。
+
+
 subj_n <- 80   # 总被试量：抑郁患者30人，健康对照组被试30人
 trial_n <- 30  # 每张图片呈现的次数
 
 # 固定效应
-b0 <- 0.5       # 截距 (所有条件的均值)
-b1 <- 6.5        # 图片类型的固定效应 (主效应)
-b2 <- 0.1     # 组别的固定效应 (主效应)
+b0 <- 0.5      # 截距 (所有条件的均值)
+b1 <- 6.5      # 图片类型的固定效应 (主效应)
+b2 <- 0.1      # 组别的固定效应 (主效应)
 b3 <- 0.1      # 图片类型与组别的交互作用
 
 # 随机效应
-u0s <- 2    # 被试的随机截距
-u1s <- 2    # 被试的随机斜率 (图片类型)
+u0s <- 2       # 被试的随机截距
+u1s <- 2       # 被试的随机斜率 (图片类型)
 
 # 误差项
 sigma <- 2
-```
 
-之后根据假定的实验设计和参数来生成模拟数据：
-```{r, results='hide'}
 #生成假定实验的条件的数据矩阵
 df_simu <- add_random(subj = subj_n) %>%
   # 添加被试的组别信息（被试间）
@@ -64,16 +59,12 @@ df_simu <- add_random(subj = subj_n) %>%
            b2 * group_code +      # 组别的斜率
            b3 * type_code * group_code +   # 交互作用
            sigma)            #误差项
-```
 
-
-```{r results='hide'}
 df_simu <- df_simu %>% 
   select(subj, group, type, LPP) # 去除冗余的信息
-```
 
+#保存生成的数据
+save(df_simu, file = "simulated_data.rdata")
 
-```{r}
 #查看生成的数据
 head(df_simu,10) 
-```
