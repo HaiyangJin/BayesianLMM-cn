@@ -1,0 +1,174 @@
+---
+title: "补充材料"
+author: 
+- 潘晚坷
+- 温秀娟
+- 金海洋
+date: '2023-05-15'
+documentclass: ctexart
+figureTitle: "图S"
+figPrefix: "图S"
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    pandoc_args: ["--filter", "pandoc-crossref"]
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, results='hide', include = FALSE}
+if (!require(papaja)) {library(papaja)}
+if (!require(tidyverse)) {library(tidyverse)}
+if (!require(faux)) {library(faux)}
+set.seed(2022)
+```
+
+# 数据模拟
+
+我们借助一个假想的心理学实验展示如何模拟虚拟数据。
+在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，
+期间我们采集了他们的脑电数据。
+因变量是晚期正电位（late positive potentials, LPP）的波幅。
+简单来说，这是一个
+2 (组别`group`：抑郁症组`depression`、对照组 `control` ) ×
+2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，
+其中组别为被试间因素，图片类型为被试内因素。
+该假想实验的数据是使用DeBruine (2021)的faux工具包生成，
+下面是模拟这个实验所预设的参数。
+
+```{r}
+subj_n <- 80   # 总被试量：抑郁患者30人，健康对照组被试30人
+trial_n <- 30  # 每张图片呈现的次数
+
+# 固定效应
+b0 <- 0.5      # 截距 (所有条件的均值)
+b1 <- 6.5      # 图片类型的固定效应 (主效应)
+b2 <- 0.1      # 组别的固定效应 (主效应)
+b3 <- 0.1      # 图片类型与组别的交互作用
+
+# 随机效应
+u0s <- 2       # 被试的随机截距
+u1s <- 2       # 被试的随机斜率 (图片类型)
+
+# 误差项
+sigma <- 2
+
+#生成假定实验的条件的数据矩阵
+df_simu <- add_random(subj = subj_n) %>%
+  # 添加被试的组别信息（被试间）
+  add_between("subj", group = c("depression", "control")) %>%
+  # 添加图片类型的信息（被试内）
+  add_within("subj", type = c("netural","positive")) %>%
+  # 每种图片呈现30次
+  add_random(trial = trial_n) %>%
+  # 图片类型的编码：中性=-0.5；正性=0.5
+  add_contrast("type", "anova", colnames = "type_code") %>%
+  # 被试组别的编码：抑郁症组=-0.5；控制组=0.5
+  add_contrast("group", "anova",colnames = "group_code") %>%
+  # 添加基于被试的随机截距和斜率 (图片类型)
+  add_ranef("subj", u0s = u0s, u1s = u1s, .cors=0.5) %>%
+  # 添加观察值的误差项
+  add_ranef(sigma = sigma) %>%
+  # 最后根据设置的固定效应和随机效应参数值，生成因变量。
+  mutate(LPP = (b0+u0s) +         # 截距
+           (b1+u1s) * type_code + # 图片材料的斜率
+           b2 * group_code +      # 组别的斜率
+           b3 * type_code * group_code +   # 交互作用
+           sigma)            #误差项
+
+df_simu <- df_simu %>%
+  select(subj, group, type, LPP) # 去除冗余的信息
+
+#保存生成的数据
+save(df_simu, file = "simulated_data.rdata")
+
+#查看生成的数据
+head(df_simu,10)
+```
+
+
+# 方差分析
+
+```{r}
+df_simu = df_simu |> mutate(
+  组别 = factor(group, labels = c("抑郁组","控制组")),
+  图片类型 = factor(type, labels = c("中性图片","积极图片"))
+)
+
+# Two-way mixed ANOVA test
+df_simu |> bruceR::MANOVA(
+  subID = "subj",
+  between = "组别",
+  within = "图片类型",
+  dv = "LPP",
+  digits = 2,
+  # file = "重复测量方差分析结果.doc"
+)
+```
+
+# 宽数据格式转换为长数据格式展示
+
+该代码用于展示如何将宽数据格式转换为长数据格式
+
+考虑到本文中模拟的数据本身就是长数据格式，为了演示如何转化宽数据为长数据，我们将另行生成一份虚拟数据。
+- 该示例数据中只包含“图片类型”一个组内变量。
+- 并且，每一列为被试在某一图片类型下的LPP指标
+
+```{r}
+# 创建参与者编号和实验数据
+n_subj = 5
+subj <- paste0("P", 1:n_subj)
+data <- data.frame(subj = subj, neutral = rnorm(n_subj), positive = rnorm(n_subj))
+
+# 查看前几行数据
+head(data)
+```
+
+现在我们需要将宽数据转换为长数据，以便更容易地进行分析。我们可以使用`tidyr`包中的`pivot_longer`函数来实现。下面是代码示例：
+
+```{r}
+library(tidyr)
+# 将数据从宽格式转换为长格式
+long_data <- pivot_longer(data, cols = c("neutral","positive"), names_to = "type", values_to = "LPP")
+
+# 查看前几行数据
+head(long_data,10)
+```
+
+现在我们已经将宽数据转换为长数据了，每行代表一个参与者在某一图片类型下的LPP表现。
+
+# 不收敛MCMC链演示
+
+```{r, results='hide', include = FALSE}
+library(bayesplot)
+library(posterior)
+```
+
+
+```{r, fig.cap="不收敛MCMC链演示图"}
+# 模拟生成4条不收敛的MCMC链，每条链包含4000个样本
+n_chains <- 4
+chain_length <- 4000
+
+# 生成三种链，一种收敛的链 good_chains，两种不收敛的链 bad_chains0和bad_chains1
+good_chains <- rbeta(n = chain_length*n_chains, shape1 = 2, shape2 = 5)
+good_chains <- matrix(good_chains, nrow = n_chains)
+bad_chains <- matrix(rnorm(chain_length*n_chains, mean = sort(good_chains), sd = 0.05), nrow = n_chains)
+
+chains <- array(0, dim = c(chain_length, n_chains,1))
+chains[,,1] = bad_chains
+dimnames(chains) <- list(
+  Iteration = NULL,
+  Chain = paste0("chain:",1:n_chains),
+  Parameter = c("bad_chains")
+)
+
+# 绘制轨迹图
+mcmc_trace(chains)
+```
+
+```{r}
+# 计算rhat
+rhat( extract_variable_matrix(chains, "bad_chains") ) # 2.73128
+```

@@ -1,8 +1,12 @@
+R
 .Rproj.user
+
 .Rhistory
 .RData
 .Rproj
+*.Rproj
 
 *.tiff
 brm_fit
 *.doc*
+*.html
