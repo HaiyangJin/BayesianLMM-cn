@@ -7,6 +7,6 @@
 - 基于贝叶斯因子的贝叶斯推断
 
 [补充材料.pdf](./补充材料.pdf)为补充材料，通过[补充材料.Rmd](./补充材料.Rmd)生成。包括
-- 数据模拟。`simulated_data.rdata` 为生成的模拟数据，可通过 `load("simulated_data.rdata")` 加载。
+- 数据模拟
 - 方差分析
 - 不收敛MCMC链演示
