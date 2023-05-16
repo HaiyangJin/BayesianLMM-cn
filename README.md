@@ -9,5 +9,4 @@
 [补充材料.pdf](./补充材料.pdf)为补充材料，通过[补充材料.Rmd](./补充材料.Rmd)生成。包括
 - 数据模拟。`simulated_data.rdata` 为生成的模拟数据，可通过 `load("simulated_data.rdata")` 加载。
 - 方差分析
-- 宽数据格式转换为长数据格式展示
 - 不收敛MCMC链演示

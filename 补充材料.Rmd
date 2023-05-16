@@ -107,37 +107,6 @@ df_simu |> bruceR::MANOVA(
 )
 ```
 
-# 宽数据格式转换为长数据格式展示
-
-该代码用于展示如何将宽数据格式转换为长数据格式
-
-考虑到本文中模拟的数据本身就是长数据格式，为了演示如何转化宽数据为长数据，我们将另行生成一份虚拟数据。
-- 该示例数据中只包含“图片类型”一个组内变量。
-- 并且，每一列为被试在某一图片类型下的LPP指标
-
-```{r}
-# 创建参与者编号和实验数据
-n_subj = 5
-subj <- paste0("P", 1:n_subj)
-data <- data.frame(subj = subj, neutral = rnorm(n_subj), positive = rnorm(n_subj))
-
-# 查看前几行数据
-head(data)
-```
-
-现在我们需要将宽数据转换为长数据，以便更容易地进行分析。我们可以使用`tidyr`包中的`pivot_longer`函数来实现。下面是代码示例：
-
-```{r}
-library(tidyr)
-# 将数据从宽格式转换为长格式
-long_data <- pivot_longer(data, cols = c("neutral","positive"), names_to = "type", values_to = "LPP")
-
-# 查看前几行数据
-head(long_data,10)
-```
-
-现在我们已经将宽数据转换为长数据了，每行代表一个参与者在某一图片类型下的LPP表现。
-
 # 不收敛MCMC链演示
 
 ```{r, results='hide', include = FALSE}
