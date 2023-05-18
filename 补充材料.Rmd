@@ -8,6 +8,10 @@ date: '2023-05-15'
 documentclass: ctexart
 figureTitle: "图S"
 figPrefix: "图S"
+bibliography: "references.bib"
+header-includes:
+  \usepackage{geometry}
+  \newgeometry{margin=1.5in}
 output:
   rticles::ctex:
     fig_caption: yes
@@ -21,21 +25,13 @@ output:
 if (!require(papaja)) {library(papaja)}
 if (!require(tidyverse)) {library(tidyverse)}
 if (!require(faux)) {library(faux)}
+if (!require(bruceR)) {library(bruceR)}
 set.seed(2022)
 ```
 
 # 数据模拟
 
-我们借助一个假想的心理学实验展示如何模拟虚拟数据。
-在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片，
-期间我们采集了他们的脑电数据。
-因变量是晚期正电位（late positive potentials, LPP）的波幅。
-简单来说，这是一个
-2 (组别`group`：抑郁症组`depression`、对照组 `control` ) ×
-2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计，
-其中组别为被试间因素，图片类型为被试内因素。
-该假想实验的数据是使用DeBruine (2021)的faux工具包生成，
-下面是模拟这个实验所预设的参数。
+我们借助一个假想的心理学实验展示如何模拟虚拟数据。 在模拟实验中，40名抑郁症患者和40名健康对照组被试观看30张积极和30张中性图片， 期间我们采集了他们的脑电数据。 因变量是晚期正电位（late positive potentials, LPP）的波幅。 简单来说，这是一个 2 (组别`group`：抑郁症组`depression`、对照组 `control` ) × 2 (图片类型`type`：积极`positive`、中性`neutral`) 的混合实验设计， 其中组别为被试间因素，图片类型为被试内因素。 该假想实验的数据是使用faux工具包生成 [@R-faux]， 下面是模拟这个实验所预设的参数。
 
 ```{r}
 subj_n <- 80   # 总被试量：抑郁患者30人，健康对照组被试30人
@@ -87,8 +83,10 @@ save(df_simu, file = "simulated_data.rdata")
 head(df_simu,10)
 ```
 
-
 # 方差分析
+
+我们使用 bruceR 包进行混合实验设计方差分析 [@R-bruceR]。以下为示例代码与结果。
+其中，图片类型的主效应显著($F(1,78) = 983.78, p < 0.01, \eta^2_p = .93$)，而组别的主效应、组别与图片类型的交互作用不显著($p > 0.1$)。
 
 ```{r}
 df_simu = df_simu |> mutate(
@@ -102,7 +100,7 @@ df_simu |> bruceR::MANOVA(
   between = "组别",
   within = "图片类型",
   dv = "LPP",
-  digits = 2,
+  digits = 2
   # file = "重复测量方差分析结果.doc"
 )
 ```
@@ -114,8 +112,11 @@ library(bayesplot)
 library(posterior)
 ```
 
+我们使用 bayesplot 和 posterior 包模拟和绘制 MCMC 链 [@R-bayesplot; @R-posterior]。
+图1为MCMC链不收敛的示例。其中，四条链存在明显的分离，并且第四条链并没有达到稳定分布。
+$\hat{R}=2.73$ 的结果大于1.1，说明该MCMC链的收敛结果很差。
 
-```{r, fig.cap="不收敛MCMC链演示图"}
+```{r, fig.cap="不收敛MCMC链演示图", fig.width=5.2,fig.height=3}
 # 模拟生成4条不收敛的MCMC链，每条链包含4000个样本
 n_chains <- 4
 chain_length <- 4000
@@ -123,7 +124,9 @@ chain_length <- 4000
 # 生成三种链，一种收敛的链 good_chains，两种不收敛的链 bad_chains0和bad_chains1
 good_chains <- rbeta(n = chain_length*n_chains, shape1 = 2, shape2 = 5)
 good_chains <- matrix(good_chains, nrow = n_chains)
-bad_chains <- matrix(rnorm(chain_length*n_chains, mean = sort(good_chains), sd = 0.05), nrow = n_chains)
+bad_chains <- matrix(
+  rnorm(chain_length*n_chains, mean = sort(good_chains), sd = 0.05), 
+  nrow = n_chains)
 
 chains <- array(0, dim = c(chain_length, n_chains,1))
 chains[,,1] = bad_chains
@@ -141,3 +144,9 @@ mcmc_trace(chains)
 # 计算rhat
 rhat( extract_variable_matrix(chains, "bad_chains") ) # 2.73128
 ```
+
+
+
+\newpage
+
+# 参考文献 {-}
